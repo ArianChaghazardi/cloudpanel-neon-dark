@@ -3,7 +3,7 @@
    Enterprise-grade UX inspired by Linear, Vercel, and Cloudflare Dashboard:
    - Complete Mobile-First Responsiveness (0 horizontal overflow)
    - Mobile App Bottom Navigation Bar (< 768px)
-   - Real-time Server Vital Gauges (CPU, RAM, Disk visual progress rings)
+   - Real-time Radial SVG Cockpit Gauges (CPU, RAM, Disk with live animations)
    - Tech Stack Brand Badges with SVG Icons (Node.js, Python, PHP, WordPress)
    - Spotlight Command Palette (Ctrl+K / Cmd+K)
    - Live Search, Filters & Card/Table View Mode
@@ -42,113 +42,203 @@
   box-shadow: 0 0 6px #10b981;
 }
 
-.clp-header-stats {
-  display: flex;
+.clp-header-spotlight-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin-left: 12px;
-}
-
-.clp-header-stat-pill {
-  font-size: 11.5px;
-  font-family: var(--clp-font-mono);
-  color: var(--clp-text-muted);
+  gap: 8px;
   background: var(--clp-bg-input);
-  border: 1px solid var(--clp-border-subtle);
-  padding: 2px 8px;
-  border-radius: 6px;
+  border: 1px solid var(--clp-border-default);
+  color: var(--clp-text-muted);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: all var(--clp-transition-fast);
+  margin-right: 12px;
 }
 
-.clp-header-stat-pill strong {
-  color: var(--clp-accent-hover);
+.clp-header-spotlight-btn:hover {
+  background: var(--clp-bg-surface-elevated);
+  border-color: var(--clp-border-hover);
+  color: var(--clp-text-heading);
+  box-shadow: 0 0 10px var(--clp-accent-glow);
+}
+
+.clp-header-spotlight-btn kbd {
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-subtle);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10.5px;
+  font-family: var(--clp-font-mono);
+  color: var(--clp-accent);
 }
 
 /* ==========================================================================
-   2. Real-Time Server Vital Gauges (CPU, Memory, Disk Bars)
+   2. Real-Time Radial SVG Cockpit Gauges (CPU, RAM, NVMe Storage)
    ========================================================================== */
-.clp-vitals-container {
+.clp-radial-cockpit {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 18px;
   margin-bottom: 24px;
 }
 
-.clp-vital-card {
+.clp-cockpit-card {
   background: var(--clp-bg-surface);
   border: 1px solid var(--clp-border-default);
-  border-radius: var(--clp-radius-lg);
-  padding: 16px 20px;
+  border-radius: var(--clp-radius-xl);
+  padding: 20px 22px;
   box-shadow: var(--clp-shadow-sm);
   transition: all var(--clp-transition-normal);
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.clp-vital-card:hover {
+.clp-cockpit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--clp-accent-gradient);
+  opacity: 0;
+  transition: opacity var(--clp-transition-fast);
+}
+
+.clp-cockpit-card:hover {
   border-color: var(--clp-border-hover);
   box-shadow: var(--clp-shadow-glow), var(--clp-shadow-md);
   transform: translateY(-2px);
 }
 
-.clp-vital-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+.clp-cockpit-card:hover::before {
+  opacity: 1;
 }
 
-.clp-vital-title {
-  font-size: 13px;
-  font-weight: 600;
+.clp-cockpit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.clp-cockpit-title {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--clp-text-muted);
   display: flex;
   align-items: center;
   gap: 8px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
-.clp-vital-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--clp-text-heading);
-  font-family: var(--clp-font-mono);
+.clp-cockpit-title .icon {
+  font-size: 15px;
 }
 
-.clp-vital-bar-wrap {
-  width: 100%;
-  height: 8px;
-  background: var(--clp-bg-input);
-  border-radius: 9999px;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid var(--clp-border-subtle);
-}
-
-.clp-vital-bar {
-  height: 100%;
-  border-radius: 9999px;
-  background: var(--clp-accent-gradient);
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px var(--clp-accent-glow);
-}
-
-.clp-vital-bar.warn {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4) !important;
-}
-
-.clp-vital-bar.danger {
-  background: linear-gradient(135deg, #dc2626, #ef4444) !important;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
-}
-
-.clp-vital-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
+.clp-cockpit-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  width: fit-content;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.clp-cockpit-status.healthy {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.clp-cockpit-status.warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.clp-cockpit-status.danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.clp-cockpit-sub {
+  font-size: 12px;
   color: var(--clp-text-muted);
+  font-family: var(--clp-font-mono);
+  margin-top: 2px;
+}
+
+.clp-cockpit-radial {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clp-radial-meter {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.clp-radial-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 8;
+}
+
+.clp-radial-bar {
+  fill: none;
+  stroke: var(--clp-accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;
+  filter: drop-shadow(0 0 6px var(--clp-accent-glow));
+}
+
+.clp-radial-cpu {
+  stroke: var(--clp-accent);
+}
+
+.clp-radial-ram {
+  stroke: #38bdf8;
+}
+
+.clp-radial-disk {
+  stroke: #10b981;
+}
+
+.clp-radial-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.clp-radial-val {
+  font-size: 17px;
+  font-weight: 800;
+  font-family: var(--clp-font-mono);
+  color: var(--clp-text-heading);
 }
 
 /* ==========================================================================
@@ -212,7 +302,7 @@
 /* ==========================================================================
    4. Command Palette (Spotlight: Ctrl+K / Cmd+K)
    ========================================================================== */
-.clp-palette-backdrop {
+.clp-palette-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.82);
@@ -230,7 +320,7 @@
   transition: opacity var(--clp-transition-fast);
 }
 
-.clp-palette-backdrop.open {
+.clp-palette-overlay.open {
   opacity: 1;
   pointer-events: auto;
 }
@@ -247,11 +337,11 @@
   transition: transform var(--clp-transition-fast);
 }
 
-.clp-palette-backdrop.open .clp-palette-modal {
+.clp-palette-overlay.open .clp-palette-modal {
   transform: scale(1) translateY(0);
 }
 
-.clp-palette-input-wrap {
+.clp-palette-header {
   display: flex;
   align-items: center;
   padding: 18px 22px;
@@ -259,7 +349,7 @@
   gap: 14px;
 }
 
-.clp-palette-input-wrap svg {
+.clp-palette-header svg {
   color: var(--clp-accent);
   flex-shrink: 0;
 }
@@ -274,11 +364,7 @@
   font-family: var(--clp-font-family);
 }
 
-.clp-palette-input::placeholder {
-  color: var(--clp-text-muted);
-}
-
-.clp-palette-kbd {
+.clp-palette-esc {
   font-size: 11px;
   font-weight: 600;
   color: var(--clp-text-muted);
@@ -295,7 +381,7 @@
   padding: 10px;
 }
 
-.clp-palette-category {
+.clp-palette-section-title {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -313,33 +399,101 @@
   color: var(--clp-text-body);
   cursor: pointer;
   transition: all var(--clp-transition-fast);
-  text-decoration: none !important;
   margin-bottom: 2px;
 }
 
 .clp-palette-item:hover,
-.clp-palette-item.active {
+.clp-palette-item.selected {
   background: var(--clp-bg-surface-hover);
   color: var(--clp-accent-hover);
   transform: translateX(4px);
 }
 
-.clp-palette-item .item-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  font-weight: 500;
+.clp-palette-icon {
+  font-size: 18px;
+  margin-right: 12px;
 }
 
-.clp-palette-item .item-action {
+.clp-palette-text {
+  flex: 1;
+}
+
+.clp-palette-text .title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--clp-text-heading);
+}
+
+.clp-palette-text .desc {
   font-size: 12px;
   color: var(--clp-text-muted);
 }
 
+.clp-palette-arrow {
+  color: var(--clp-text-muted);
+  font-size: 12px;
+}
+
+.clp-palette-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 22px;
+  border-top: 1px solid var(--clp-border-subtle);
+  background: var(--clp-bg-surface);
+  font-size: 11px;
+  color: var(--clp-text-muted);
+}
+
+.clp-palette-footer kbd {
+  background: var(--clp-bg-input);
+  border: 1px solid var(--clp-border-subtle);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
 /* ==========================================================================
-   5. Sites Page Interactive Toolbar & Filter System
+   5. Sites Page Executive Summary Banner & Toolbar
    ========================================================================== */
+.clp-sites-summary-banner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.clp-summary-card {
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-lg);
+  padding: 16px 20px;
+  box-shadow: var(--clp-shadow-sm);
+  transition: all var(--clp-transition-normal);
+}
+
+.clp-summary-card:hover {
+  border-color: var(--clp-border-hover);
+  box-shadow: var(--clp-shadow-glow);
+}
+
+.clp-summary-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--clp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.clp-summary-val {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--clp-text-heading);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .clp-sites-toolbar {
   background: var(--clp-bg-surface);
   border: 1px solid var(--clp-border-default);
@@ -448,7 +602,7 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 /* ==========================================================================
-   6. Sites Card Grid (Modern Touch-Friendly View)
+   6. Sites Card Grid (Vercel / Railway Grade)
    ========================================================================== */
 .clp-sites-card-grid {
   display: grid;
@@ -498,11 +652,11 @@ html[dir="rtl"] .clp-sites-search-input {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .clp-site-card-domain {
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 700;
   color: var(--clp-text-heading);
   word-break: break-all;
@@ -511,27 +665,64 @@ html[dir="rtl"] .clp-sites-search-input {
   gap: 8px;
 }
 
+.clp-site-domain-icon {
+  font-size: 16px;
+}
+
 .clp-site-card-domain:hover {
   color: var(--clp-accent-hover);
 }
 
 .clp-site-card-meta {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 18px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  background: var(--clp-bg-input);
+  border-radius: var(--clp-radius-sm);
 }
 
 .clp-site-meta-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: var(--clp-text-muted);
+  flex-direction: column;
+  gap: 2px;
 }
 
-.clp-site-meta-item strong {
+.clp-meta-lbl {
+  font-size: 10.5px;
+  color: var(--clp-text-muted);
+  text-transform: uppercase;
+}
+
+.clp-meta-val {
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--clp-text-body);
+}
+
+.clp-site-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.clp-shortcut-chip {
+  font-size: 11px;
+  padding: 3px 8px;
+  background: var(--clp-bg-surface-elevated);
+  border: 1px solid var(--clp-border-subtle);
+  border-radius: 4px;
+  color: var(--clp-text-muted);
+  text-decoration: none !important;
+  transition: all var(--clp-transition-fast);
+}
+
+.clp-shortcut-chip:hover {
+  border-color: var(--clp-border-hover);
+  color: var(--clp-accent-hover);
+  background: var(--clp-bg-surface-hover);
 }
 
 .clp-site-card-actions {
@@ -553,7 +744,7 @@ html[dir="rtl"] .clp-sites-search-input {
   background: var(--clp-accent-gradient-soft);
   border: 1px solid var(--clp-border-default);
   border-radius: var(--clp-radius-lg);
-  padding: 14px 20px;
+  padding: 16px 22px;
   margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
@@ -565,12 +756,12 @@ html[dir="rtl"] .clp-sites-search-input {
 .clp-health-status {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .clp-status-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--clp-success);
   box-shadow: 0 0 10px var(--clp-success);
@@ -578,7 +769,7 @@ html[dir="rtl"] .clp-sites-search-input {
   flex-shrink: 0;
 }
 
-.clp-status-dot::after {
+.clp-status-dot.pulse::after {
   content: '';
   position: absolute;
   inset: -4px;
@@ -590,6 +781,18 @@ html[dir="rtl"] .clp-sites-search-input {
 @keyframes clp-pulse {
   0% { transform: scale(0.8); opacity: 1; }
   100% { transform: scale(2.2); opacity: 0; }
+}
+
+.clp-health-title {
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--clp-text-heading);
+}
+
+.clp-health-sub {
+  font-size: 12px;
+  color: var(--clp-text-muted);
+  margin-top: 2px;
 }
 
 .clp-health-actions {
@@ -652,21 +855,21 @@ html[dir="rtl"] .clp-sites-search-input {
 /* ==========================================================================
    9. Floating Quick Dock (Desktop)
    ========================================================================== */
-.clp-floating-dock {
+.clp-quick-dock {
   position: fixed;
   bottom: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%);
   background: var(--clp-bg-glass);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--clp-border-hover);
   border-radius: 9999px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), var(--clp-shadow-glow);
-  padding: 6px 12px;
+  padding: 6px 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   z-index: 9998;
   transition: all var(--clp-transition-normal);
 }
@@ -675,8 +878,8 @@ html[dir="rtl"] .clp-sites-search-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   color: var(--clp-text-muted);
   background: transparent;
@@ -684,7 +887,6 @@ html[dir="rtl"] .clp-sites-search-input {
   transition: all var(--clp-transition-fast);
   cursor: pointer;
   text-decoration: none !important;
-  position: relative;
 }
 
 .clp-dock-item:hover {
@@ -695,16 +897,14 @@ html[dir="rtl"] .clp-sites-search-input {
   transform: translateY(-2px);
 }
 
-.clp-dock-divider {
-  width: 1px;
-  height: 20px;
-  background: var(--clp-border-subtle);
-  margin: 0 2px;
+.clp-dock-item.highlight {
+  background: var(--clp-accent-gradient);
+  color: #ffffff;
+  box-shadow: 0 0 12px var(--clp-accent-glow);
 }
 
 /* ==========================================================================
    10. Mobile App Bottom Navigation Bar (< 768px)
-   Replaces clunky mobile navigation with native App-like UX
    ========================================================================== */
 .clp-mobile-nav {
   display: none;
@@ -718,63 +918,49 @@ html[dir="rtl"] .clp-sites-search-input {
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-top: 1px solid var(--clp-border-default);
   z-index: 9999;
-  padding: 0 8px;
+  padding: 0 12px;
   box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.5);
-}
-
-.clp-mobile-nav-items {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.clp-mobile-nav-link {
+.clp-mobile-nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: var(--clp-text-muted);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 500;
-  gap: 4px;
+  gap: 3px;
   text-decoration: none !important;
-  padding: 6px 12px;
-  border-radius: var(--clp-radius-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
   transition: all var(--clp-transition-fast);
 }
 
-.clp-mobile-nav-link svg {
+.clp-mobile-nav-item svg {
   width: 20px;
   height: 20px;
 }
 
-.clp-mobile-nav-link.active,
-.clp-mobile-nav-link:hover {
+.clp-mobile-nav-item.active,
+.clp-mobile-nav-item:hover {
   color: var(--clp-accent-hover);
 }
 
-/* Floating Action Button for Add Site on Mobile */
-.clp-mobile-fab {
+.clp-mobile-nav-primary {
   width: 44px;
   height: 44px;
   border-radius: 50%;
   background: var(--clp-accent-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
+  color: #ffffff !important;
+  margin-top: -18px;
   box-shadow: 0 4px 16px var(--clp-accent-glow);
-  margin-top: -16px;
   border: 3px solid var(--clp-bg-canvas);
-  transition: transform var(--clp-transition-fast);
-}
-
-.clp-mobile-fab:active {
-  transform: scale(0.92);
 }
 
 /* ==========================================================================
@@ -827,10 +1013,7 @@ html[dir="rtl"] .clp-toast-container {
 
 /* ==========================================================================
    12. COMPLETE RESPONSIVE BREAKPOINT SYSTEM
-   Mobile, Tablet & Large Screens Precision Rules
    ========================================================================== */
-
-/* Tablet & Mobile Screens (< 992px) */
 @media (max-width: 991.98px) {
   .main-content {
     padding: 20px 18px 40px 18px !important;
@@ -847,28 +1030,19 @@ html[dir="rtl"] .clp-toast-container {
   .information-box-container {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-
-  .clp-vitals-container {
-    grid-template-columns: 1fr !important;
-  }
-
-  .clp-header-stats {
-    display: none !important;
-  }
 }
 
-/* Mobile Screens (< 768px) */
 @media (max-width: 767.98px) {
   body {
-    padding-bottom: 74px !important; /* Prevent bottom nav overlap */
+    padding-bottom: 74px !important;
   }
 
   .clp-mobile-nav {
-    display: block !important;
+    display: flex !important;
   }
 
-  .clp-floating-dock {
-    display: none !important; /* Replaced by mobile bottom nav */
+  .clp-quick-dock {
+    display: none !important;
   }
 
   .header {
@@ -876,16 +1050,6 @@ html[dir="rtl"] .clp-toast-container {
     padding: 0 12px !important;
   }
 
-  .header .logo {
-    padding: 0 10px !important;
-    border-right: none !important;
-  }
-
-  .header .nav-link-container {
-    display: none !important; /* Handled by bottom mobile nav */
-  }
-
-  /* Hide old desktop sidebar on mobile */
   .sidebar {
     display: none !important;
   }
@@ -898,31 +1062,13 @@ html[dir="rtl"] .clp-toast-container {
     padding: 16px 14px 40px 14px !important;
   }
 
-  .page-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 12px !important;
-  }
-
-  .page-header .page-title h1 {
-    font-size: 20px !important;
-  }
-
-  /* Server Info Boxes on Mobile */
   .information-box-container {
     grid-template-columns: 1fr !important;
-    gap: 10px !important;
   }
 
-  .information-box {
-    padding: 14px 16px !important;
-  }
-
-  /* Sites Toolbar on Mobile */
   .clp-sites-toolbar {
     flex-direction: column !important;
     align-items: stretch !important;
-    padding: 12px 14px !important;
   }
 
   .clp-sites-search-box {
@@ -931,17 +1077,14 @@ html[dir="rtl"] .clp-toast-container {
 
   .clp-filter-pills {
     overflow-x: auto !important;
-    padding-bottom: 4px !important;
     white-space: nowrap !important;
     flex-wrap: nowrap !important;
-    -webkit-overflow-scrolling: touch;
   }
 
   .clp-view-toggle {
-    display: none !important; /* Force card view on mobile for zero horizontal scroll */
+    display: none !important;
   }
 
-  /* Force sites table into modern responsive card grid on phone */
   .card-table .table-sites {
     display: none !important;
   }
@@ -949,17 +1092,11 @@ html[dir="rtl"] .clp-toast-container {
   .clp-sites-card-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 14px !important;
-  }
-
-  .clp-site-card {
-    padding: 16px !important;
   }
 
   .clp-health-ribbon {
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 10px !important;
   }
 
   .clp-health-actions {
@@ -970,16 +1107,5 @@ html[dir="rtl"] .clp-toast-container {
   .clp-quick-ssh-btn {
     width: 100%;
     justify-content: center;
-  }
-
-  /* Palette modal on mobile */
-  .clp-palette-backdrop {
-    padding-top: 6vh !important;
-  }
-
-  .clp-toast-container {
-    right: 14px !important;
-    left: 14px !important;
-    bottom: 78px !important;
   }
 }

@@ -2,8 +2,8 @@
  * CloudPanel Neon Dark - Advanced UX Revolution & Mobile-First Engine
  * 
  * Capabilities:
- *  1. Executive Command Center Hero (Hostname, Online Status, Quick Actions)
- *  2. Real-Time Resource Vital Gauges (CPU, RAM, Disk with instant auto-sync)
+ *  1. Executive Command Center Hero (Hostname, Online Status, Uptime, Daemons, Quick Actions)
+ *  2. Real-Time Radial SVG Cockpit Gauges (Live polling /clp-custom/api/vitals.php every 3s)
  *  3. Sites Page Project Cards by Default (Vercel/Railway tier) + Official Tech Logos
  *  4. Instant Live Search & Category Filtering
  *  5. Mobile App Bottom Navigation Bar (< 768px)
@@ -17,6 +17,7 @@
 
   const STORAGE_THEME = 'clp_custom_theme';
   const STORAGE_VIEW = 'clp_sites_view_mode';
+  const VITALS_API_URL = '/clp-custom/api/vitals.php';
 
   const THEMES = [
     {
@@ -106,23 +107,29 @@
     }
   }
 
-  // Pre-apply theme immediately
+  // Pre-apply theme immediately to avoid flash of unstyled content
   applyTheme(getActiveTheme(), false);
 
-  // Initialize upon DOM ready
-  document.addEventListener('DOMContentLoaded', function () {
-    injectThemeSwitcher();
-    setupHighchartsHook();
-    setupCommandPalette();
-    injectHeaderBreadcrumb();
-    enhanceSitesPageUX();
-    enhanceDashboardUX();
-    injectMobileBottomNavigation();
-    injectFloatingQuickDock();
+  // Robust Lifecycle Execution
+  function initializeEngine() {
+    try { injectThemeSwitcher(); } catch (e) { console.warn('injectThemeSwitcher:', e); }
+    try { setupHighchartsHook(); } catch (e) { console.warn('setupHighchartsHook:', e); }
+    try { setupCommandPalette(); } catch (e) { console.warn('setupCommandPalette:', e); }
+    try { injectHeaderBreadcrumb(); } catch (e) { console.warn('injectHeaderBreadcrumb:', e); }
+    try { enhanceSitesPageUX(); } catch (e) { console.warn('enhanceSitesPageUX:', e); }
+    try { enhanceDashboardUX(); } catch (e) { console.warn('enhanceDashboardUX:', e); }
+    try { injectMobileBottomNavigation(); } catch (e) { console.warn('injectMobileBottomNavigation:', e); }
+    try { injectFloatingQuickDock(); } catch (e) { console.warn('injectFloatingQuickDock:', e); }
 
-    // Start auto-sync loop to keep vitals updated from Highcharts
-    startVitalsAutoSync();
-  });
+    // Start Real-Time Live Vitals Engine
+    startLiveVitalsEngine();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEngine);
+  } else {
+    initializeEngine();
+  }
 
   // ==========================================================================
   // 1. Toast Notification System
@@ -151,215 +158,270 @@
   }
 
   // ==========================================================================
-  // 2. Server Breadcrumb & Header Workspace Switcher
-  // ==========================================================================
-  function injectHeaderBreadcrumb() {
-    const navLinkContainer = document.querySelector('.header .nav-link-container');
-    if (!navLinkContainer || document.getElementById('clp-server-pill')) return;
-
-    const hostnameEl = document.querySelector('.information-box a.click-to-copy');
-    const hostname = hostnameEl ? hostnameEl.textContent.trim() : (window.location.hostname || 'server');
-
-    const breadcrumb = document.createElement('div');
-    breadcrumb.id = 'clp-server-pill';
-    breadcrumb.className = 'clp-server-breadcrumb';
-    breadcrumb.title = 'Click to open Command Palette (Ctrl+K)';
-    breadcrumb.innerHTML = `
-      <span class="status-dot"></span>
-      <span style="font-weight: 600;">${hostname}</span>
-      <span style="font-size: 10px; color: var(--clp-text-muted);">▼</span>
-    `;
-
-    breadcrumb.addEventListener('click', function () {
-      if (window.openCommandPalette) window.openCommandPalette();
-    });
-
-    navLinkContainer.parentNode.insertBefore(breadcrumb, navLinkContainer);
-  }
-
-  // ==========================================================================
-  // 3. Theme Switcher in Header
+  // 2. Visual Theme Switcher (7 Designer Palettes)
   // ==========================================================================
   function injectThemeSwitcher() {
-    const navbarRight = document.querySelector('.header .navbar-right ul');
-    if (!navbarRight || document.getElementById('clp-custom-theme-switcher')) return;
+    if (document.querySelector('.clp-theme-dock')) return;
 
-    const currentTheme = getActiveTheme();
+    const dock = document.createElement('div');
+    dock.className = 'clp-theme-dock';
 
-    const li = document.createElement('li');
-    li.id = 'clp-custom-theme-switcher';
-    li.className = 'dropdown clp-theme-switcher-wrapper';
-
-    let optionsHtml = '';
-    THEMES.forEach(t => {
-      const isSelected = t.id === currentTheme;
-      optionsHtml += `
-        <a class="dropdown-item clp-theme-option ${isSelected ? 'active' : ''}" href="javascript:void(0);" data-theme-id="${t.id}" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px;">
-          <span style="width: 14px; height: 14px; border-radius: 50%; background: ${t.gradient}; display: inline-block; box-shadow: 0 0 8px ${t.color};"></span>
-          <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 600; font-size: 13px; color: var(--clp-text-heading);">${t.name}</span>
-            <span style="font-size: 11px; color: var(--clp-text-muted);">${t.desc}</span>
-          </div>
-        </a>
-      `;
-    });
-
-    li.innerHTML = `
-      <a class="dropdown-toggle" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Switch Visual Theme" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--clp-border-default); background: var(--clp-bg-surface);">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--clp-accent);"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-        <span style="font-size: 12.5px; font-weight: 600; color: var(--clp-text-body);">Theme</span>
-      </a>
-      <div class="dropdown-menu dropdown-menu-end" style="background: var(--clp-bg-surface-elevated); border: 1px solid var(--clp-border-default); border-radius: 14px; padding: 8px; min-width: 250px; max-height: 420px; overflow-y: auto; box-shadow: var(--clp-shadow-md);">
-        <div style="padding: 6px 10px 8px 10px; border-bottom: 1px solid var(--clp-border-subtle); margin-bottom: 6px;">
-          <div style="font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--clp-text-muted);">Choose Visual Theme (7 Options)</div>
+    dock.innerHTML = `
+      <button class="clp-theme-toggle" id="clp-theme-toggle-btn" title="Personalize Visual Palette" aria-label="Theme Switcher">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </button>
+      <div class="clp-theme-menu" id="clp-theme-menu">
+        <div class="clp-theme-menu-header">
+          <div class="title">Visual Aesthetics</div>
+          <div class="subtitle">Select your tailored designer palette</div>
         </div>
-        ${optionsHtml}
+        <div class="clp-theme-list">
+          ${THEMES.map(t => `
+            <div class="clp-theme-option ${t.id === getActiveTheme() ? 'active' : ''}" data-theme-id="${t.id}">
+              <div class="clp-theme-swatch" style="background: ${t.gradient};"></div>
+              <div class="clp-theme-info">
+                <div class="name">${t.name}</div>
+                <div class="desc">${t.desc}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
       </div>
     `;
 
-    const userAvatar = navbarRight.querySelector('.user-avatar');
-    if (userAvatar) {
-      navbarRight.insertBefore(li, userAvatar);
-    } else {
-      navbarRight.appendChild(li);
-    }
+    document.body.appendChild(dock);
 
-    li.querySelectorAll('.clp-theme-option').forEach(item => {
-      item.addEventListener('click', function (e) {
-        e.preventDefault();
-        applyTheme(this.getAttribute('data-theme-id'), true);
+    const toggleBtn = dock.querySelector('#clp-theme-toggle-btn');
+    const menu = dock.querySelector('#clp-theme-menu');
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dock.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
+
+    dock.querySelectorAll('.clp-theme-option').forEach(el => {
+      el.addEventListener('click', function () {
+        const themeId = this.getAttribute('data-theme-id');
+        applyTheme(themeId, true);
+        menu.classList.remove('open');
       });
     });
   }
 
   // ==========================================================================
-  // 4. Command Palette (Spotlight: Ctrl+K / Cmd+K)
+  // 3. Spotlight Command Palette (Ctrl+K / Cmd+K)
   // ==========================================================================
   function setupCommandPalette() {
-    const paletteBackdrop = document.createElement('div');
-    paletteBackdrop.id = 'clp-command-palette';
-    paletteBackdrop.className = 'clp-palette-backdrop';
+    if (document.querySelector('.clp-palette-overlay')) return;
 
-    paletteBackdrop.innerHTML = `
+    const overlay = document.createElement('div');
+    overlay.className = 'clp-palette-overlay';
+    overlay.id = 'clp-command-palette';
+
+    overlay.innerHTML = `
       <div class="clp-palette-modal">
-        <div class="clp-palette-input-wrap">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" class="clp-palette-input" placeholder="Type a command, search sites, or navigate..." autocomplete="off" spellcheck="false">
-          <span class="clp-palette-kbd">ESC</span>
+        <div class="clp-palette-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input type="text" class="clp-palette-input" id="clp-palette-search" placeholder="Type a command, site, or jump to page... (Esc to close)">
+          <span class="clp-palette-esc">ESC</span>
         </div>
-        <div class="clp-palette-results">
-          <div class="clp-palette-category">Navigation</div>
-          <a class="clp-palette-item" href="/dashboard"><div class="item-title">📊 Dashboard</div><span class="item-action">Go</span></a>
-          <a class="clp-palette-item" href="/sites"><div class="item-title">🌐 Sites & Domains</div><span class="item-action">Go</span></a>
-          <a class="clp-palette-item" href="/site/new"><div class="item-title">➕ Add New Site</div><span class="item-action">Create</span></a>
-          <a class="clp-palette-item" href="/databases"><div class="item-title">🗄️ Databases & Users</div><span class="item-action">Manage</span></a>
-          <a class="clp-palette-item" href="/security"><div class="item-title">🛡️ Security & SSL / Firewall</div><span class="item-action">Go</span></a>
-          <a class="clp-palette-item" href="/logs"><div class="item-title">📜 System & Service Logs</div><span class="item-action">View</span></a>
-          <a class="clp-palette-item" href="/user/settings"><div class="item-title">⚙️ User & Panel Settings</div><span class="item-action">Edit</span></a>
-
-          <div class="clp-palette-category">Visual Themes (7 Options)</div>
-          <div class="clp-palette-item" data-action="theme" data-val="neon-blue"><div class="item-title">⚡ Neon Midnight Blue</div><span class="item-action">Activate</span></div>
-          <div class="clp-palette-item" data-action="theme" data-val="cyber-cyan"><div class="item-title">🌊 Cyber Cyan</div><span class="item-action">Activate</span></div>
-          <div class="clp-palette-item" data-action="theme" data-val="amoled-pure"><div class="item-title">🌑 AMOLED Pure Black</div><span class="item-action">Activate</span></div>
-          <div class="clp-palette-item" data-action="theme" data-val="matrix-green"><div class="item-title">🟢 Emerald Matrix</div><span class="item-action">Activate</span></div>
-          <div class="clp-palette-item" data-action="theme" data-val="violet-synth"><div class="item-title">🟣 Violet Royale</div><span class="item-action">Activate</span></div>
-          <div class="clp-palette-item" data-action="theme" data-val="sunset-amber"><div class="item-title">🟠 Sunset Amber</div><span class="item-action">Activate</span></div>
-          <div class="clp-palette-item" data-action="theme" data-val="crimson-red"><div class="item-title">🔴 Crimson Phantom</div><span class="item-action">Activate</span></div>
-
-          <div class="clp-palette-category">Quick Actions</div>
-          <div class="clp-palette-item" data-action="copy-ip"><div class="item-title">📋 Copy Server Public IP</div><span class="item-action">Copy</span></div>
-          <div class="clp-palette-item" data-action="copy-ssh"><div class="item-title">💻 Copy SSH Login Command</div><span class="item-action">Copy</span></div>
+        <div class="clp-palette-results" id="clp-palette-results"></div>
+        <div class="clp-palette-footer">
+          <span>Navigation: <kbd>↑</kbd> <kbd>↓</kbd></span>
+          <span>Select: <kbd>Enter</kbd></span>
+          <span>Close: <kbd>Esc</kbd></span>
         </div>
       </div>
     `;
 
-    document.body.appendChild(paletteBackdrop);
+    document.body.appendChild(overlay);
 
-    const input = paletteBackdrop.querySelector('.clp-palette-input');
+    const input = overlay.querySelector('#clp-palette-search');
+    const resultsContainer = overlay.querySelector('#clp-palette-results');
+
+    const defaultCommands = [
+      { section: 'Navigation', title: 'Dashboard & Vitals', desc: 'Real-time server monitoring and analytics', url: '/dashboard', icon: '📊' },
+      { section: 'Navigation', title: 'Sites Manager', desc: 'Overview of all hosted websites and applications', url: '/', icon: '🌐' },
+      { section: 'Navigation', title: 'Services Control', desc: 'Inspect and manage Nginx, MySQL, PHP-FPM daemons', url: '/admin/services', icon: '⚙️' },
+      { section: 'Navigation', title: 'Instance Settings', desc: 'Server hardware and timezone configuration', url: '/admin/instance/settings', icon: '🛠️' },
+      { section: 'Actions', title: 'Create New Site', desc: 'Deploy WordPress, PHP, Node.js, Python, or Reverse Proxy', url: '/site/new', icon: '➕' },
+      { section: 'Actions', title: 'Open phpMyAdmin', desc: 'Launch single sign-on database manager', url: '/pma', icon: '🗄️' },
+      { section: 'Actions', title: 'Copy Root SSH Command', desc: 'Copy "ssh root@' + window.location.hostname + '" to clipboard', action: () => {
+        navigator.clipboard.writeText(`ssh root@${window.location.hostname}`);
+        showToast(`SSH Command copied to clipboard!`);
+      }, icon: '📋' },
+      { section: 'Appearance', title: 'Theme: Neon Midnight Blue', desc: 'Electric sapphire glow', action: () => applyTheme('neon-blue', true), icon: '🎨' },
+      { section: 'Appearance', title: 'Theme: Cyber Cyan', desc: 'Oceanic turquoise pulse', action: () => applyTheme('cyber-cyan', true), icon: '🎨' },
+      { section: 'Appearance', title: 'Theme: AMOLED Pure Black', desc: 'True pitch black contrast', action: () => applyTheme('amoled-pure', true), icon: '🎨' },
+      { section: 'Appearance', title: 'Theme: Emerald Matrix', desc: 'Hacker emerald neon', action: () => applyTheme('matrix-green', true), icon: '🎨' },
+      { section: 'Appearance', title: 'Theme: Violet Royale', desc: 'Interstellar purple glow', action: () => applyTheme('violet-synth', true), icon: '🎨' },
+      { section: 'Appearance', title: 'Theme: Sunset Amber', desc: 'Volcanic amber solar flare', action: () => applyTheme('sunset-amber', true), icon: '🎨' },
+      { section: 'Appearance', title: 'Theme: Crimson Phantom', desc: 'Stealth cyber crimson pulse', action: () => applyTheme('crimson-red', true), icon: '🎨' }
+    ];
 
     function openPalette() {
-      paletteBackdrop.classList.add('open');
+      overlay.classList.add('open');
       input.value = '';
-      input.focus();
-      filterPaletteItems('');
+      renderPaletteResults(defaultCommands);
+      setTimeout(() => input.focus(), 50);
     }
 
     function closePalette() {
-      paletteBackdrop.classList.remove('open');
+      overlay.classList.remove('open');
     }
 
-    window.openCommandPalette = openPalette;
+    function renderPaletteResults(items) {
+      if (!items || items.length === 0) {
+        resultsContainer.innerHTML = `<div class="clp-palette-empty">No matching commands or sites found.</div>`;
+        return;
+      }
 
+      let currentSection = '';
+      let html = '';
+
+      items.forEach((item, idx) => {
+        if (item.section && item.section !== currentSection) {
+          currentSection = item.section;
+          html += `<div class="clp-palette-section-title">${currentSection}</div>`;
+        }
+
+        html += `
+          <div class="clp-palette-item ${idx === 0 ? 'selected' : ''}" data-idx="${idx}">
+            <div class="clp-palette-icon">${item.icon || '⚡'}</div>
+            <div class="clp-palette-text">
+              <div class="title">${item.title}</div>
+              <div class="desc">${item.desc}</div>
+            </div>
+            <div class="clp-palette-arrow">↵</div>
+          </div>
+        `;
+      });
+
+      resultsContainer.innerHTML = html;
+
+      resultsContainer.querySelectorAll('.clp-palette-item').forEach((el, index) => {
+        el.addEventListener('click', () => {
+          executePaletteItem(items[index]);
+        });
+      });
+    }
+
+    function executePaletteItem(item) {
+      closePalette();
+      if (item.action) {
+        item.action();
+      } else if (item.url) {
+        window.location.href = item.url;
+      }
+    }
+
+    input.addEventListener('input', function () {
+      const q = this.value.toLowerCase().trim();
+      if (!q) {
+        renderPaletteResults(defaultCommands);
+        return;
+      }
+
+      const filtered = defaultCommands.filter(c =>
+        c.title.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q) || (c.section && c.section.toLowerCase().includes(q))
+      );
+      renderPaletteResults(filtered);
+    });
+
+    // Keyboard navigation
     window.addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        if (paletteBackdrop.classList.contains('open')) {
+        if (overlay.classList.contains('open')) {
           closePalette();
         } else {
           openPalette();
         }
-      } else if (e.key === 'Escape' && paletteBackdrop.classList.contains('open')) {
+      }
+
+      if (e.key === 'Escape' && overlay.classList.contains('open')) {
         closePalette();
       }
     });
 
-    paletteBackdrop.addEventListener('click', function (e) {
-      if (e.target === paletteBackdrop) closePalette();
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closePalette();
     });
 
-    input.addEventListener('input', function () {
-      filterPaletteItems(this.value.toLowerCase().trim());
-    });
+    input.addEventListener('keydown', function (e) {
+      const items = Array.from(resultsContainer.querySelectorAll('.clp-palette-item'));
+      if (!items.length) return;
 
-    function filterPaletteItems(query) {
-      const items = paletteBackdrop.querySelectorAll('.clp-palette-item');
-      items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.includes(query) ? 'flex' : 'none';
-      });
-    }
+      let currentSelected = items.findIndex(el => el.classList.contains('selected'));
 
-    paletteBackdrop.querySelectorAll('.clp-palette-item[data-action]').forEach(item => {
-      item.addEventListener('click', function () {
-        const action = this.getAttribute('data-action');
-        const val = this.getAttribute('data-val');
-
-        if (action === 'theme') {
-          applyTheme(val, true);
-        } else if (action === 'copy-ip') {
-          const ipEl = document.querySelector('.information-box a.click-to-copy');
-          const ip = ipEl ? ipEl.textContent.trim() : window.location.hostname;
-          navigator.clipboard.writeText(ip);
-          showToast(`Server IP (${ip}) copied to clipboard!`);
-        } else if (action === 'copy-ssh') {
-          const ipEl = document.querySelector('.information-box a.click-to-copy');
-          const ip = ipEl ? ipEl.textContent.trim() : window.location.hostname;
-          navigator.clipboard.writeText(`ssh root@${ip}`);
-          showToast(`SSH Command (ssh root@${ip}) copied to clipboard!`);
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        items[currentSelected]?.classList.remove('selected');
+        const next = (currentSelected + 1) % items.length;
+        items[next]?.classList.add('selected');
+        items[next]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        items[currentSelected]?.classList.remove('selected');
+        const prev = (currentSelected - 1 + items.length) % items.length;
+        items[prev]?.classList.add('selected');
+        items[prev]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentSelected >= 0 && items[currentSelected]) {
+          items[currentSelected].click();
         }
-        closePalette();
-      });
+      }
+    });
+  }
+
+  // ==========================================================================
+  // 4. Header Breadcrumb & Global Quick Action Spotlight
+  // ==========================================================================
+  function injectHeaderBreadcrumb() {
+    const headerLeft = document.querySelector('.header .header-left') || document.querySelector('.header');
+    if (!headerLeft || document.querySelector('.clp-header-spotlight-btn')) return;
+
+    const spotlightBtn = document.createElement('button');
+    spotlightBtn.type = 'button';
+    spotlightBtn.className = 'clp-header-spotlight-btn';
+    spotlightBtn.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.3-4.3"/>
+      </svg>
+      <span>Quick Search...</span>
+      <kbd>Ctrl K</kbd>
+    `;
+
+    spotlightBtn.addEventListener('click', () => {
+      const palette = document.getElementById('clp-command-palette');
+      if (palette) {
+        palette.classList.add('open');
+        document.getElementById('clp-palette-search')?.focus();
+      }
     });
 
-    const navLinkContainer = document.querySelector('.header .nav-link-container');
-    if (navLinkContainer && !document.getElementById('clp-palette-trigger-btn')) {
-      const searchBtn = document.createElement('button');
-      searchBtn.id = 'clp-palette-trigger-btn';
-      searchBtn.type = 'button';
-      searchBtn.className = 'btn btn-sm btn-white d-inline-flex align-items-center gap-2';
-      searchBtn.style.cssText = 'border-radius: 20px; padding: 4px 12px; margin-left: 8px; font-size: 12px; color: var(--clp-text-muted); background: var(--clp-bg-input); border-color: var(--clp-border-default);';
-      searchBtn.innerHTML = `
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <span>Search</span>
-        <kbd style="font-size: 10px; background: var(--clp-bg-surface); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--clp-border-subtle);">Ctrl+K</kbd>
-      `;
-      searchBtn.addEventListener('click', openPalette);
-      navLinkContainer.appendChild(searchBtn);
+    const userBlock = document.querySelector('.header .user-container') || document.querySelector('.header .header-right');
+    if (userBlock) {
+      userBlock.parentNode.insertBefore(spotlightBtn, userBlock);
     }
   }
 
   // ==========================================================================
-  // 5. Sites Page UX Revolution (Card Grid by Default, Search, Logos & Filters)
+  // 5. Sites Page UX Revolution (Summary, Live Search, Vercel Card Grid & Tech Badges)
   // ==========================================================================
   function enhanceSitesPageUX() {
     const tableSites = document.querySelector('.table-sites');
@@ -377,7 +439,7 @@
 
       const domainLink = cells[0].querySelector('a');
       const domain = domainLink ? domainLink.textContent.trim() : cells[0].textContent.trim();
-      const manageUrl = domainLink ? domainLink.getAttribute('href') : '#';
+      const manageUrl = domainLink ? domainLink.getAttribute('href') : `/site/${domain}`;
       const user = cells[1].textContent.trim();
       const rawAppType = cells[2].textContent.trim().toLowerCase();
 
@@ -407,6 +469,7 @@
         appName = 'Reverse Proxy';
       }
 
+      // Upgrade table badge
       cells[2].innerHTML = `
         <span class="clp-tech-badge ${badgeClass}">
           ${icon}
@@ -425,12 +488,13 @@
         icon: icon
       });
 
+      // Add inline quick actions inside table row
       if (domainLink && !domainLink.querySelector('.clp-cell-actions')) {
         const actionsWrap = document.createElement('span');
         actionsWrap.className = 'clp-cell-actions';
         actionsWrap.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; margin-left: 10px;';
         actionsWrap.innerHTML = `
-          <a href="http://${domain}" target="_blank" rel="noopener noreferrer" title="Visit Site ↗" style="color: var(--clp-text-muted); font-size: 11px;">
+          <a href="https://${domain}" target="_blank" rel="noopener noreferrer" title="Visit Site ↗" style="color: var(--clp-text-muted); font-size: 11px;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
           <span class="clp-copy-domain" title="Copy Domain" style="cursor: pointer; color: var(--clp-text-muted); font-size: 11px;">
@@ -447,7 +511,38 @@
       }
     });
 
-    // Build Card Grid
+    if (document.querySelector('.clp-sites-card-grid')) return;
+
+    // Build Executive Sites Metric Overview Banner
+    const totalCount = sitesData.length;
+    const wpCount = sitesData.filter(s => s.appType.includes('word')).length;
+    const nodeCount = sitesData.filter(s => s.appType.includes('node')).length;
+    const phpCount = sitesData.filter(s => s.appType.includes('php')).length;
+
+    const summaryBanner = document.createElement('div');
+    summaryBanner.className = 'clp-sites-summary-banner';
+    summaryBanner.innerHTML = `
+      <div class="clp-summary-card">
+        <div class="clp-summary-label">Total Hosted Sites</div>
+        <div class="clp-summary-val">${totalCount} <span style="font-size: 13px; font-weight: normal; color: #10b981;">● All Active</span></div>
+      </div>
+      <div class="clp-summary-card">
+        <div class="clp-summary-label">Security & Encryption</div>
+        <div class="clp-summary-val" style="color: #38bdf8;">100% <span style="font-size: 13px; font-weight: normal; color: var(--clp-text-muted);">SSL Protected</span></div>
+      </div>
+      <div class="clp-summary-card">
+        <div class="clp-summary-label">Stack Distribution</div>
+        <div class="clp-summary-val" style="font-size: 14px; display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+          <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">PHP: ${phpCount}</span>
+          <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Node: ${nodeCount}</span>
+          <span class="badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">WordPress: ${wpCount}</span>
+        </div>
+      </div>
+    `;
+
+    cardTable.parentNode.insertBefore(summaryBanner, cardTable);
+
+    // Build Modern Vercel/Railway Style Card Grid
     const cardGridContainer = document.createElement('div');
     cardGridContainer.className = 'clp-sites-card-grid';
 
@@ -458,10 +553,10 @@
       card.setAttribute('data-app', site.appType);
 
       card.innerHTML = `
-        <div>
+        <div class="clp-site-card-top">
           <div class="clp-site-card-header">
-            <a href="${site.manageUrl}" class="clp-site-card-domain">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--clp-accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <a href="${site.manageUrl}" class="clp-site-card-domain" title="Manage ${site.domain}">
+              <span class="clp-site-domain-icon">🌐</span>
               <span>${site.domain}</span>
             </a>
             <span class="clp-tech-badge ${site.badgeClass}">
@@ -471,18 +566,23 @@
           </div>
           <div class="clp-site-card-meta">
             <div class="clp-site-meta-item">
-              <span>Site User:</span>
-              <strong>${site.user}</strong>
+              <span class="clp-meta-lbl">Site User</span>
+              <strong class="clp-meta-val">👤 ${site.user}</strong>
             </div>
             <div class="clp-site-meta-item">
-              <span>Security:</span>
-              <span class="badge badge-success" style="font-size: 11px;">🔒 SSL Active</span>
+              <span class="clp-meta-lbl">SSL Protection</span>
+              <span class="clp-meta-val" style="color: #10b981;">🔒 Active</span>
             </div>
+          </div>
+          <div class="clp-site-shortcuts">
+            <a href="${site.manageUrl}/databases" class="clp-shortcut-chip" title="Databases">🗄️ DB</a>
+            <a href="${site.manageUrl}/certificates" class="clp-shortcut-chip" title="SSL Certificate">🛡️ SSL</a>
+            <a href="${site.manageUrl}/vhost" class="clp-shortcut-chip" title="Vhost Template">⚙️ Vhost</a>
           </div>
         </div>
         <div class="clp-site-card-actions">
-          <a href="${site.manageUrl}" class="btn btn-primary btn-sm">Manage Site</a>
-          <a href="http://${site.domain}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" title="Open in new tab">Visit ↗</a>
+          <a href="${site.manageUrl}" class="btn btn-primary btn-sm">Manage</a>
+          <a href="https://${site.domain}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" title="Visit in new tab">Visit ↗</a>
         </div>
       `;
       cardGridContainer.appendChild(card);
@@ -490,7 +590,7 @@
 
     cardTable.parentNode.insertBefore(cardGridContainer, cardTable.nextSibling);
 
-    // Build Toolbar
+    // Build Toolbar (Search + Filter Pills + View Switcher)
     const toolbar = document.createElement('div');
     toolbar.className = 'clp-sites-toolbar';
 
@@ -571,7 +671,7 @@
       });
     });
 
-    // Make Card View DEFAULT for Vercel/Railway tier UX
+    // Make Card View DEFAULT for high-tier UX
     const savedView = localStorage.getItem(STORAGE_VIEW) || 'grid';
     setViewMode(savedView);
 
@@ -583,7 +683,7 @@
   }
 
   // ==========================================================================
-  // 6. Dashboard UX Revolution (Vitals Gauges, Health Hero & Layout Controls)
+  // 6. Dashboard UX Revolution (Radial SVG Gauges & Cockpit Hero)
   // ==========================================================================
   function enhanceDashboardUX() {
     const infoBoxesContainer = document.querySelector('.information-box-container');
@@ -592,32 +692,29 @@
     const ipElement = infoBoxesContainer.querySelector('a.click-to-copy');
     const serverIp = ipElement ? ipElement.textContent.trim() : window.location.hostname;
 
-    // Parse Cores and RAM from .information-box if available
-    let coresText = 'Multi-Core Active';
-    let memText = 'Dynamic Allocation';
-    const allBoxes = infoBoxesContainer.querySelectorAll('.information-box');
-    allBoxes.forEach(b => {
-      const text = b.textContent;
-      if (text.includes('Cores') || text.includes('Memory')) {
-        coresText = text.replace(/Size/i, '').trim();
-      }
-    });
-
     const card = infoBoxesContainer.closest('.card');
-    if (card && !document.querySelector('.clp-health-ribbon')) {
+    if (!card) return;
+
+    // 1. Inject Executive Server Command Hero Ribbon
+    if (!document.querySelector('.clp-health-ribbon')) {
       const ribbon = document.createElement('div');
       ribbon.className = 'clp-health-ribbon';
 
       ribbon.innerHTML = `
         <div class="clp-health-status">
-          <span class="clp-status-dot"></span>
+          <span class="clp-status-dot pulse"></span>
           <div>
-            <div style="font-weight: 700; font-size: 14px; color: var(--clp-text-heading);">Server Command Center: Optimal Performance</div>
-            <div style="font-size: 12px; color: var(--clp-text-muted);">Core daemons (Nginx, PHP-FPM, MySQL) active & healthy • ${coresText}</div>
+            <div class="clp-health-title">Server Command Center: System Operational</div>
+            <div class="clp-health-sub" id="clp-hero-sub">
+              Nginx: <span class="badge badge-success">🟢 Active</span> •
+              MariaDB: <span class="badge badge-success">🟢 Active</span> •
+              PHP-FPM: <span class="badge badge-success">🟢 Active</span> •
+              <span id="clp-hero-uptime">Uptime: Checking...</span>
+            </div>
           </div>
         </div>
         <div class="clp-health-actions">
-          <button type="button" class="clp-quick-ssh-btn" id="clp-ssh-copier">
+          <button type="button" class="clp-quick-ssh-btn" id="clp-ssh-copier" title="Click to copy root SSH login">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             <span>ssh root@${serverIp}</span>
           </button>
@@ -633,59 +730,80 @@
       });
     }
 
-    // Inject Real-Time Server Vital Gauges (CPU, Memory, Disk progress bars)
-    if (card && !document.querySelector('.clp-vitals-container')) {
-      const vitals = document.createElement('div');
-      vitals.className = 'clp-vitals-container';
+    // 2. Inject Futuristic Radial Cockpit Gauges (CPU, Memory, NVMe Storage)
+    if (!document.querySelector('.clp-radial-cockpit')) {
+      const cockpit = document.createElement('div');
+      cockpit.className = 'clp-radial-cockpit';
 
-      vitals.innerHTML = `
-        <div class="clp-vital-card" id="clp-vital-cpu">
-          <div class="clp-vital-header">
-            <span class="clp-vital-title">⚡ CPU Load</span>
-            <span class="clp-vital-value" id="clp-cpu-val">24.5%</span>
+      cockpit.innerHTML = `
+        <!-- CPU Radial Meter -->
+        <div class="clp-cockpit-card" id="cockpit-cpu">
+          <div class="clp-cockpit-info">
+            <div class="clp-cockpit-title">
+              <span class="icon">⚡</span>
+              <span>CPU UTILIZATION</span>
+            </div>
+            <div class="clp-cockpit-status" id="clp-cpu-status-pill">● Normal</div>
+            <div class="clp-cockpit-sub" id="clp-cpu-subtext">Loading multi-core load...</div>
           </div>
-          <div class="clp-vital-bar-wrap">
-            <div class="clp-vital-bar" id="clp-cpu-bar" style="width: 24.5%;"></div>
-          </div>
-          <div class="clp-vital-footer">
-            <span>Utilization Status</span>
-            <span id="clp-cpu-status" style="color: #10b981;">● Normal</span>
+          <div class="clp-cockpit-radial">
+            <svg class="clp-radial-meter" viewBox="0 0 100 100">
+              <circle class="clp-radial-bg" cx="50" cy="50" r="40" />
+              <circle class="clp-radial-bar clp-radial-cpu" id="clp-radial-cpu-circle" cx="50" cy="50" r="40" stroke-dasharray="251.32" stroke-dashoffset="251.32" />
+            </svg>
+            <div class="clp-radial-label">
+              <span class="clp-radial-val" id="clp-cpu-gauge-val">0.0%</span>
+            </div>
           </div>
         </div>
 
-        <div class="clp-vital-card" id="clp-vital-ram">
-          <div class="clp-vital-header">
-            <span class="clp-vital-title">🧠 Memory (RAM)</span>
-            <span class="clp-vital-value" id="clp-ram-val">48.2%</span>
+        <!-- RAM Radial Meter -->
+        <div class="clp-cockpit-card" id="cockpit-ram">
+          <div class="clp-cockpit-info">
+            <div class="clp-cockpit-title">
+              <span class="icon">🧠</span>
+              <span>MEMORY (RAM)</span>
+            </div>
+            <div class="clp-cockpit-status healthy" id="clp-ram-status-pill">● Healthy</div>
+            <div class="clp-cockpit-sub" id="clp-ram-subtext">Calculating buffer & cache...</div>
           </div>
-          <div class="clp-vital-bar-wrap">
-            <div class="clp-vital-bar" id="clp-ram-bar" style="width: 48.2%;"></div>
-          </div>
-          <div class="clp-vital-footer">
-            <span>Buffer & Cache</span>
-            <span id="clp-ram-status" style="color: #38bdf8;">● Active</span>
+          <div class="clp-cockpit-radial">
+            <svg class="clp-radial-meter" viewBox="0 0 100 100">
+              <circle class="clp-radial-bg" cx="50" cy="50" r="40" />
+              <circle class="clp-radial-bar clp-radial-ram" id="clp-radial-ram-circle" cx="50" cy="50" r="40" stroke-dasharray="251.32" stroke-dashoffset="251.32" />
+            </svg>
+            <div class="clp-radial-label">
+              <span class="clp-radial-val" id="clp-ram-gauge-val">0.0%</span>
+            </div>
           </div>
         </div>
 
-        <div class="clp-vital-card" id="clp-vital-disk">
-          <div class="clp-vital-header">
-            <span class="clp-vital-title">💾 Storage (SSD)</span>
-            <span class="clp-vital-value" id="clp-disk-val">34.0%</span>
+        <!-- Storage Radial Meter -->
+        <div class="clp-cockpit-card" id="cockpit-disk">
+          <div class="clp-cockpit-info">
+            <div class="clp-cockpit-title">
+              <span class="icon">💾</span>
+              <span>NVMe STORAGE</span>
+            </div>
+            <div class="clp-cockpit-status" id="clp-disk-status-pill">● Normal</div>
+            <div class="clp-cockpit-sub" id="clp-disk-subtext">Reading mount /...</div>
           </div>
-          <div class="clp-vital-bar-wrap">
-            <div class="clp-vital-bar" id="clp-disk-bar" style="width: 34%;"></div>
-          </div>
-          <div class="clp-vital-footer">
-            <span>I/O Speed</span>
-            <span style="color: #10b981;">● High Performance</span>
+          <div class="clp-cockpit-radial">
+            <svg class="clp-radial-meter" viewBox="0 0 100 100">
+              <circle class="clp-radial-bg" cx="50" cy="50" r="40" />
+              <circle class="clp-radial-bar clp-radial-disk" id="clp-radial-disk-circle" cx="50" cy="50" r="40" stroke-dasharray="251.32" stroke-dashoffset="251.32" />
+            </svg>
+            <div class="clp-radial-label">
+              <span class="clp-radial-val" id="clp-disk-gauge-val">0.0%</span>
+            </div>
           </div>
         </div>
       `;
 
-      card.parentNode.insertBefore(vitals, card);
+      card.parentNode.insertBefore(cockpit, card);
     }
 
-    // Chart Layout & Stats Controls
+    // Chart Layout Toggle (Focus Mode vs 2x2 Grid)
     const chartsCard = document.querySelector('.dashboard-charts-container .card');
     const chartContainer = document.querySelector('.chart-container');
     if (chartsCard && chartContainer) {
@@ -715,26 +833,136 @@
   }
 
   // ==========================================================================
-  // 7. Highcharts Hook & Dynamic Sync Engine
+  // 7. Live Real-Time Vitals Engine (Fast Polling + Radial Animations)
   // ==========================================================================
-  function setupHighchartsHook() {
-    if (!window.Highcharts) return;
+  function updateRadialMeter(circleId, valId, percent) {
+    const circle = document.getElementById(circleId);
+    const label = document.getElementById(valId);
+    if (!circle || !label) return;
 
-    const originalChart = window.Highcharts.chart;
-    window.Highcharts.chart = function (renderTo, userOptions, callback) {
-      const themeColors = getThemeColors(getActiveTheme());
-      const enhancedOptions = enhanceChartOptions(userOptions, themeColors);
-      const chartInstance = originalChart.call(this, renderTo, enhancedOptions, function (chart) {
-        const containerId = typeof renderTo === 'string' ? renderTo : (renderTo ? renderTo.id : '');
-        injectDynamicChartStats(containerId, chart);
-        syncVitalsFromChart(containerId, chart);
-        if (callback) callback(chart);
-      });
-      return chartInstance;
-    };
+    const clamped = Math.max(0, Math.min(100, percent));
+    const circumference = 251.327; // 2 * pi * 40
+    const offset = circumference - (clamped / 100) * circumference;
+
+    circle.style.strokeDashoffset = offset.toFixed(2);
+    label.textContent = clamped.toFixed(1) + '%';
+
+    // Dynamic color shifting
+    if (clamped > 85) {
+      circle.style.stroke = '#ef4444';
+      circle.style.filter = 'drop-shadow(0 0 6px rgba(239, 68, 68, 0.6))';
+    } else if (clamped > 65) {
+      circle.style.stroke = '#f59e0b';
+      circle.style.filter = 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.6))';
+    } else {
+      circle.style.stroke = '';
+      circle.style.filter = '';
+    }
   }
 
-  // Bulletproof extractor to get latest numerical reading across series
+  function fetchAndApplyLiveVitals() {
+    fetch(VITALS_API_URL, { cache: 'no-store' })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (!data || !data.success) return;
+
+        // 1. CPU
+        if (data.cpu) {
+          const cpuPct = data.cpu.percent;
+          updateRadialMeter('clp-radial-cpu-circle', 'clp-cpu-gauge-val', cpuPct);
+          const cpuSub = document.getElementById('clp-cpu-subtext');
+          const cpuPill = document.getElementById('clp-cpu-status-pill');
+          if (cpuSub) cpuSub.textContent = `${data.cpu.cores} Cores • Load: ${data.load_average ? data.load_average.join(', ') : 'OK'}`;
+          if (cpuPill) {
+            cpuPill.textContent = `● ${data.cpu.status}`;
+            cpuPill.className = 'clp-cockpit-status' + (cpuPct > 85 ? ' danger' : (cpuPct > 65 ? ' warn' : ''));
+          }
+        }
+
+        // 2. RAM
+        if (data.ram) {
+          const ramPct = data.ram.percent;
+          updateRadialMeter('clp-radial-ram-circle', 'clp-ram-gauge-val', ramPct);
+          const ramSub = document.getElementById('clp-ram-subtext');
+          const ramPill = document.getElementById('clp-ram-status-pill');
+          if (ramSub) ramSub.textContent = `${data.ram.used_gb} GB / ${data.ram.total_gb} GB (${data.ram.free_gb} GB Free)`;
+          if (ramPill) {
+            ramPill.textContent = `● ${data.ram.status}`;
+            ramPill.className = 'clp-cockpit-status' + (ramPct > 85 ? ' danger' : ' healthy');
+          }
+        }
+
+        // 3. Storage
+        if (data.disk) {
+          const diskPct = data.disk.percent;
+          updateRadialMeter('clp-radial-disk-circle', 'clp-disk-gauge-val', diskPct);
+          const diskSub = document.getElementById('clp-disk-subtext');
+          const diskPill = document.getElementById('clp-disk-status-pill');
+          if (diskSub) diskSub.textContent = `${data.disk.used_gb} GB / ${data.disk.total_gb} GB (${data.disk.free_gb} GB Free)`;
+          if (diskPill) {
+            diskPill.textContent = `● ${data.disk.status}`;
+            diskPill.className = 'clp-cockpit-status' + (diskPct > 90 ? ' danger' : '');
+          }
+        }
+
+        // 4. Uptime & Daemons in Hero
+        const uptimeEl = document.getElementById('clp-hero-uptime');
+        if (uptimeEl && data.uptime) {
+          uptimeEl.textContent = `Uptime: ${data.uptime}`;
+        }
+      })
+      .catch(err => {
+        // Fallback to Highcharts scraping if API unavailable
+        fallbackVitalsFromHighcharts();
+      });
+  }
+
+  function fallbackVitalsFromHighcharts() {
+    if (!window.Highcharts || !window.Highcharts.charts) return;
+    window.Highcharts.charts.forEach(chart => {
+      if (!chart || !chart.renderTo) return;
+      const id = chart.renderTo.id || '';
+      const val = extractLatestValue(chart);
+      if (val === null) return;
+
+      if (id.includes('cpu') || id.includes('Cpu')) {
+        updateRadialMeter('clp-radial-cpu-circle', 'clp-cpu-gauge-val', val);
+      } else if (id.includes('memory') || id.includes('Memory')) {
+        updateRadialMeter('clp-radial-ram-circle', 'clp-ram-gauge-val', val);
+      } else if (id.includes('disk') || id.includes('Disk')) {
+        updateRadialMeter('clp-radial-disk-circle', 'clp-disk-gauge-val', val);
+      }
+    });
+  }
+
+  function startLiveVitalsEngine() {
+    // Immediate initial call
+    fetchAndApplyLiveVitals();
+
+    // Auto-refresh every 3.5 seconds for true real-time dashboard observability
+    setInterval(() => {
+      if (document.querySelector('.clp-radial-cockpit')) {
+        fetchAndApplyLiveVitals();
+      }
+    }, 3500);
+
+    // Also modernize Highcharts if present
+    let hcAttempts = 0;
+    const hcInterval = setInterval(() => {
+      hcAttempts++;
+      if (window.Highcharts && window.Highcharts.charts) {
+        window.Highcharts.charts.forEach(c => {
+          if (c) modernizeChart(c, getActiveTheme());
+        });
+      }
+      if (hcAttempts >= 12) clearInterval(hcInterval);
+    }, 400);
+  }
+
+  // Extract latest point from Highcharts series safely
   function extractLatestValue(chart) {
     if (!chart || !chart.series || chart.series.length === 0) return null;
     for (let s = chart.series.length - 1; s >= 0; s--) {
@@ -752,97 +980,50 @@
           if (val !== null && !isNaN(val)) return val;
         }
       }
-      if (series.userOptions && series.userOptions.data && series.userOptions.data.length > 0) {
-        for (let i = series.userOptions.data.length - 1; i >= 0; i--) {
-          const pt = series.userOptions.data[i];
-          const val = typeof pt === 'number' ? pt : (pt && typeof pt.y === 'number' ? pt.y : null);
-          if (val !== null && !isNaN(val)) return val;
-        }
-      }
     }
     return null;
   }
 
-  function syncVitalsFromChart(containerId, chart) {
-    const val = extractLatestValue(chart);
-    if (val === null) return;
+  // ==========================================================================
+  // 8. Highcharts Modernizer (Smooth AreaSpline & Neon Glow)
+  // ==========================================================================
+  function setupHighchartsHook() {
+    if (!window.Highcharts) return;
 
-    const valFormatted = Math.min(100, Math.max(0, val)).toFixed(1);
-    const valStr = valFormatted + '%';
-
-    if (containerId.includes('cpu') || containerId.includes('Cpu')) {
-      const cpuVal = document.getElementById('clp-cpu-val');
-      const cpuBar = document.getElementById('clp-cpu-bar');
-      const cpuStatus = document.getElementById('clp-cpu-status');
-      if (cpuVal) cpuVal.textContent = valStr;
-      if (cpuBar) {
-        cpuBar.style.width = valStr;
-        cpuBar.className = 'clp-vital-bar' + (val > 85 ? ' danger' : (val > 65 ? ' warn' : ''));
-      }
-      if (cpuStatus) {
-        cpuStatus.innerHTML = val > 85 ? '<span style="color:#ef4444;">● High Load</span>' : '<span style="color:#10b981;">● Normal</span>';
-      }
-    } else if (containerId.includes('memory') || containerId.includes('Memory')) {
-      const ramVal = document.getElementById('clp-ram-val');
-      const ramBar = document.getElementById('clp-ram-bar');
-      const ramStatus = document.getElementById('clp-ram-status');
-      if (ramVal) ramVal.textContent = valStr;
-      if (ramBar) {
-        ramBar.style.width = valStr;
-        ramBar.className = 'clp-vital-bar' + (val > 85 ? ' danger' : (val > 70 ? ' warn' : ''));
-      }
-      if (ramStatus) {
-        ramStatus.innerHTML = val > 85 ? '<span style="color:#ef4444;">● Heavy</span>' : '<span style="color:#38bdf8;">● Active Buffer</span>';
-      }
-    } else if (containerId.includes('disk') || containerId.includes('Disk')) {
-      const diskVal = document.getElementById('clp-disk-val');
-      const diskBar = document.getElementById('clp-disk-bar');
-      if (diskVal) diskVal.textContent = valStr;
-      if (diskBar) {
-        diskBar.style.width = valStr;
-        diskBar.className = 'clp-vital-bar' + (val > 90 ? ' danger' : (val > 75 ? ' warn' : ''));
-      }
-    }
+    const originalChart = window.Highcharts.chart;
+    window.Highcharts.chart = function (renderTo, userOptions, callback) {
+      const colors = getThemeColors(getActiveTheme());
+      const enhanced = enhanceChartOptions(userOptions, colors);
+      return originalChart.call(this, renderTo, enhanced, function (chart) {
+        if (callback) callback(chart);
+      });
+    };
   }
 
-  function startVitalsAutoSync() {
-    let attempts = 0;
-    const interval = setInterval(() => {
-      attempts++;
-      if (window.Highcharts && window.Highcharts.charts) {
-        window.Highcharts.charts.forEach(chart => {
-          if (chart && chart.renderTo) {
-            const id = chart.renderTo.id || '';
-            modernizeChart(chart, getActiveTheme());
-            injectDynamicChartStats(id, chart);
-            syncVitalsFromChart(id, chart);
-          }
-        });
-      }
-      if (attempts >= 15) clearInterval(interval);
-    }, 300);
-  }
+  function modernizeChart(chart, themeId) {
+    if (!chart || !chart.series) return;
+    const colors = getThemeColors(themeId);
 
-  function injectDynamicChartStats(containerId, chart) {
-    if (!chart || !chart.series || !chart.series[0]) return;
-    const val = extractLatestValue(chart);
-    if (val === null) return;
+    chart.series.forEach((s, idx) => {
+      s.update({
+        type: 'areaspline',
+        lineColor: colors.primary,
+        lineWidth: 2.5,
+        fillColor: {
+          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+          stops: [
+            [0, colors.gradStart],
+            [1, colors.gradEnd]
+          ]
+        },
+        marker: {
+          enabled: false,
+          states: { hover: { enabled: true, radius: 4, fillColor: colors.primary } }
+        }
+      }, false);
+    });
 
-    const chartElem = document.getElementById(containerId);
-    if (!chartElem) return;
-
-    const chartCard = chartElem.closest('.chart');
-    if (!chartCard) return;
-
-    const chartHeader = chartCard.querySelector('.chart-header');
-    if (chartHeader && !chartHeader.querySelector('.clp-chart-stat-badges')) {
-      const stats = document.createElement('div');
-      stats.className = 'clp-chart-stat-badges';
-      stats.innerHTML = `
-        <span class="clp-stat-pill">Current: <strong>${val.toFixed(1)}%</strong></span>
-      `;
-      chartHeader.appendChild(stats);
-    }
+    chart.redraw();
   }
 
   function getThemeColors(themeId) {
@@ -871,12 +1052,6 @@
     opts.plotOptions.areaspline = {
       lineWidth: 2.5,
       lineColor: colors.primary,
-      marker: {
-        radius: 3,
-        fillColor: colors.primary,
-        lineWidth: 2,
-        lineColor: '#ffffff'
-      },
       fillColor: {
         linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
         stops: [
@@ -885,132 +1060,90 @@
         ]
       }
     };
-
-    opts.tooltip = opts.tooltip || {};
-    opts.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
-    opts.tooltip.borderColor = colors.primary;
-    opts.tooltip.borderRadius = 8;
-    opts.tooltip.style = { color: '#f8fafc' };
-
-    if (opts.yAxis) {
-      opts.yAxis.gridLineColor = 'rgba(255, 255, 255, 0.05)';
-      opts.yAxis.gridLineDashStyle = 'Dash';
-    }
     return opts;
   }
 
-  function modernizeChart(chart, themeId) {
-    const colors = getThemeColors(themeId);
-    if (!chart.series) return;
-
-    chart.series.forEach(series => {
-      series.update({
-        type: 'areaspline',
-        color: colors.primary,
-        fillColor: {
-          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-          stops: [
-            [0, colors.gradStart],
-            [1, colors.gradEnd]
-          ]
-        }
-      }, false);
-    });
-    chart.redraw();
-  }
-
   // ==========================================================================
-  // 8. Mobile App Bottom Navigation Bar (< 768px)
+  // 9. Mobile App Bottom Navigation Bar (< 768px)
   // ==========================================================================
   function injectMobileBottomNavigation() {
     if (document.querySelector('.clp-mobile-nav')) return;
 
+    const currentPath = window.location.pathname;
+    const isDashboard = currentPath.includes('/dashboard');
+    const isSites = currentPath === '/' || currentPath.includes('/site');
+    const isServices = currentPath.includes('/services');
+
     const nav = document.createElement('nav');
     nav.className = 'clp-mobile-nav';
 
-    const path = window.location.pathname;
-
     nav.innerHTML = `
-      <ul class="clp-mobile-nav-items">
-        <li>
-          <a href="/dashboard" class="clp-mobile-nav-link ${path.includes('dashboard') ? 'active' : ''}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="/sites" class="clp-mobile-nav-link ${path.includes('sites') ? 'active' : ''}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <span>Sites</span>
-          </a>
-        </li>
-        <li>
-          <a href="/site/new" class="clp-mobile-fab" title="Add Site">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="/security" class="clp-mobile-nav-link ${path.includes('security') ? 'active' : ''}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>Security</span>
-          </a>
-        </li>
-        <li>
-          <button type="button" class="clp-mobile-nav-link" id="clp-mobile-search-btn" style="background: none; border: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>Search</span>
-          </button>
-        </li>
-      </ul>
+      <a href="/dashboard" class="clp-mobile-nav-item ${isDashboard ? 'active' : ''}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/" class="clp-mobile-nav-item ${isSites ? 'active' : ''}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Sites</span>
+      </a>
+      <a href="/site/new" class="clp-mobile-nav-item clp-mobile-nav-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add</span>
+      </a>
+      <a href="/admin/services" class="clp-mobile-nav-item ${isServices ? 'active' : ''}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Services</span>
+      </a>
+      <button type="button" class="clp-mobile-nav-item" id="clp-mobile-search-trigger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search</span>
+      </button>
     `;
 
     document.body.appendChild(nav);
 
-    nav.querySelector('#clp-mobile-search-btn').addEventListener('click', function () {
-      if (window.openCommandPalette) window.openCommandPalette();
+    nav.querySelector('#clp-mobile-search-trigger').addEventListener('click', () => {
+      const palette = document.getElementById('clp-command-palette');
+      if (palette) {
+        palette.classList.add('open');
+        document.getElementById('clp-palette-search')?.focus();
+      }
     });
   }
 
   // ==========================================================================
-  // 9. Floating Quick Dock (Desktop)
+  // 10. Floating Quick Action Dock
   // ==========================================================================
   function injectFloatingQuickDock() {
-    if (document.querySelector('.clp-floating-dock')) return;
+    if (document.querySelector('.clp-quick-dock')) return;
 
     const dock = document.createElement('div');
-    dock.className = 'clp-floating-dock';
+    dock.className = 'clp-quick-dock';
 
     dock.innerHTML = `
-      <button type="button" class="clp-dock-item" id="clp-dock-search" title="Command Palette (Ctrl+K)">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <button type="button" class="clp-dock-item" id="clp-dock-search" title="Spotlight Command Palette (Ctrl+K)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       </button>
-      <div class="clp-dock-divider"></div>
-      <a href="/dashboard" class="clp-dock-item" title="Dashboard">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      <a href="/site/new" class="clp-dock-item highlight" title="Add New Website">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </a>
-      <a href="/sites" class="clp-dock-item" title="Sites & Domains">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      </a>
-      <a href="/site/new" class="clp-dock-item" title="Add New Site">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </a>
-      <div class="clp-dock-divider"></div>
-      <button type="button" class="clp-dock-item" id="clp-dock-theme" title="Cycle Next Theme">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/></svg>
+      <button type="button" class="clp-dock-item" id="clp-dock-top" title="Scroll to Top">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
       </button>
     `;
 
     document.body.appendChild(dock);
 
-    dock.querySelector('#clp-dock-search').addEventListener('click', function () {
-      if (window.openCommandPalette) window.openCommandPalette();
+    dock.querySelector('#clp-dock-search').addEventListener('click', () => {
+      const palette = document.getElementById('clp-command-palette');
+      if (palette) {
+        palette.classList.add('open');
+        document.getElementById('clp-palette-search')?.focus();
+      }
     });
 
-    dock.querySelector('#clp-dock-theme').addEventListener('click', function () {
-      const current = getActiveTheme();
-      const currentIndex = THEMES.findIndex(t => t.id === current);
-      const nextIndex = (currentIndex + 1) % THEMES.length;
-      applyTheme(THEMES[nextIndex].id, true);
+    dock.querySelector('#clp-dock-top').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 

@@ -67,13 +67,24 @@ if '# BEGIN CLOUDPANEL NEON DARK' in content:
 injection = '''
   # BEGIN CLOUDPANEL NEON DARK
   sub_filter_types text/html;
-  sub_filter '</head>' '<link rel=\"stylesheet\" href=\"/clp-custom/css/theme.css\"><script defer src=\"/clp-custom/js/enhancer.js\"></script></head>';
+  sub_filter '</head>' '<link rel=\"stylesheet\" href=\"/clp-custom/css/theme.css?v=2.5.0\"><script defer src=\"/clp-custom/js/enhancer.js?v=2.5.0\"></script></head>';
   sub_filter_once on;
+
+  location = /clp-custom/api/vitals.php {
+    alias /home/clp/custom-theme/api/vitals.php;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME /home/clp/custom-theme/api/vitals.php;
+    fastcgi_pass unix:/run/clp-php-fpm.sock;
+    fastcgi_read_timeout 10;
+    add_header Cache-Control \"no-cache, no-store, must-revalidate\";
+    add_header Access-Control-Allow-Origin \"*\";
+  }
 
   location ^~ /clp-custom/ {
     alias /home/clp/custom-theme/;
     access_log off;
-    expires 30d;
+    add_header Cache-Control \"no-cache, must-revalidate\";
+    add_header Access-Control-Allow-Origin \"*\";
   }
   # END CLOUDPANEL NEON DARK
 '''
@@ -115,7 +126,7 @@ fi
 echo -e "${BLUE}[4/4] Setting up APT upgrade persistence hook...${NC}"
 cat << 'EOF' > "${APT_HOOK}"
 DPkg::Post-Invoke {
-    "if [ -d /home/clp/custom-theme ] && [ -f /home/clp/services/nginx/sites-enabled/cloudpanel.conf ]; then python3 -c 'import re; p=\"/home/clp/services/nginx/sites-enabled/cloudpanel.conf\"; c=open(p).read(); (open(p,\"w\").write(c[:c.rfind(\"}\")].rstrip()+\"\n  # BEGIN CLOUDPANEL NEON DARK\n  sub_filter_types text/html;\n  sub_filter \"</head>\" \"<link rel=\\\"stylesheet\\\" href=\\\"/clp-custom/css/theme.css\\\"><script defer src=\\\"/clp-custom/js/enhancer.js\\\"></script></head>\";\n  sub_filter_once on;\n  location ^~ /clp-custom/ { alias /home/clp/custom-theme/; access_log off; expires 30d; }\n  # END CLOUDPANEL NEON DARK\n}\n\")) if \"# BEGIN CLOUDPANEL NEON DARK\" not in c else None' 2>/dev/null || true; systemctl restart clp-nginx 2>/dev/null || true; fi";
+    "if [ -d /home/clp/custom-theme ] && [ -f /home/clp/services/nginx/sites-enabled/cloudpanel.conf ]; then python3 -c 'import re; p=\"/home/clp/services/nginx/sites-enabled/cloudpanel.conf\"; c=open(p).read(); inj=\"\\n  # BEGIN CLOUDPANEL NEON DARK\\n  sub_filter_types text/html;\\n  sub_filter \\x27</head>\\x27 \\x27<link rel=\\\"stylesheet\\\" href=\\\"/clp-custom/css/theme.css?v=2.5.0\\\"><script defer src=\\\"/clp-custom/js/enhancer.js?v=2.5.0\\\"></script></head>\\x27;\\n  sub_filter_once on;\\n  location = /clp-custom/api/vitals.php { alias /home/clp/custom-theme/api/vitals.php; include fastcgi_params; fastcgi_param SCRIPT_FILENAME /home/clp/custom-theme/api/vitals.php; fastcgi_pass unix:/run/clp-php-fpm.sock; fastcgi_read_timeout 10; add_header Cache-Control \\\"no-cache, no-store, must-revalidate\\\"; add_header Access-Control-Allow-Origin \\\"*\\\"; }\\n  location ^~ /clp-custom/ { alias /home/clp/custom-theme/; access_log off; add_header Cache-Control \\\"no-cache, must-revalidate\\\"; add_header Access-Control-Allow-Origin \\\"*\\\"; }\\n  # END CLOUDPANEL NEON DARK\\n\"; (open(p,\"w\").write(c[:c.rfind(\"}\")].rstrip() + inj + \"}\\n\")) if \"# BEGIN CLOUDPANEL NEON DARK\" not in c else None' 2>/dev/null || true; systemctl restart clp-nginx 2>/dev/null || true; fi";
 };
 EOF
 chmod 644 "${APT_HOOK}"
