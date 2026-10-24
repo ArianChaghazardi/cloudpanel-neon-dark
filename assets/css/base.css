@@ -1,0 +1,88 @@
+/* ==========================================================================
+   CloudPanel Neon Dark - Base Styles & Resets
+   ========================================================================== */
+
+html,
+html.dark {
+  background-color: var(--clp-bg-canvas) !important;
+  color: var(--clp-text-body) !important;
+  font-family: var(--clp-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color-scheme: dark;
+}
+
+body,
+html.dark body {
+  background-color: var(--clp-bg-canvas) !important;
+  color: var(--clp-text-body) !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  transition: background-color var(--clp-transition-normal), color var(--clp-transition-normal);
+}
+
+/* Text Selection */
+::selection {
+  background-color: var(--clp-accent-glow);
+  color: var(--clp-text-heading);
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--clp-bg-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clp-bg-surface-elevated);
+  border-radius: 9999px;
+  border: 2px solid var(--clp-bg-canvas);
+  transition: background var(--clp-transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clp-accent);
+}
+
+/* Typography polish */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: var(--clp-text-heading) !important;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: var(--clp-text-body);
+  line-height: 1.6;
+}
+
+/* Links */
+a,
+html.dark a {
+  color: var(--clp-accent);
+  text-decoration: none;
+  transition: color var(--clp-transition-fast), text-shadow var(--clp-transition-fast);
+}
+
+a:hover,
+html.dark a:hover {
+  color: var(--clp-accent-hover);
+  text-shadow: 0 0 12px var(--clp-accent-glow);
+}
+
+/* Code & Pre elements */
+code, pre, kbd {
+  font-family: var(--clp-font-mono) !important;
+  background-color: var(--clp-bg-surface-elevated) !important;
+  border: 1px solid var(--clp-border-subtle) !important;
+  border-radius: var(--clp-radius-sm);
+  color: var(--clp-accent-hover) !important;
+  padding: 2px 6px;
+}

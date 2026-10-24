@@ -1,0 +1,240 @@
+/* ==========================================================================
+   CloudPanel Neon Dark - Dashboard & Monitoring Panel Overhaul
+   Specifically designed to transform the plain monitoring into a sleek,
+   futuristic, high-contrast Datadog/Vercel-tier experience.
+   ========================================================================== */
+
+/* Dashboard Container */
+.dashboard-page-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   Server Information Boxes (OS, Hostname, IP, CPU/RAM Specs)
+   ========================================================================== */
+.information-box-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+  width: 100%;
+}
+
+.information-box {
+  width: auto !important;
+  margin: 0 !important;
+  background: var(--clp-bg-surface-elevated);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-lg);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--clp-transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.information-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--clp-accent-gradient);
+  opacity: 0.6;
+  transition: opacity var(--clp-transition-fast);
+}
+
+.information-box:hover {
+  border-color: var(--clp-border-hover);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.5), var(--clp-shadow-glow);
+  transform: translateY(-2px);
+}
+
+.information-box:hover::before {
+  opacity: 1;
+}
+
+.information-box h4 {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clp-text-muted) !important;
+  margin: 0 0 8px 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.information-box .click-to-copy,
+.information-box {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--clp-text-heading);
+}
+
+.information-box .click-to-copy {
+  color: var(--clp-accent-hover) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--clp-font-mono);
+  word-break: break-all;
+}
+
+.information-box .click-to-copy:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px var(--clp-accent-glow);
+}
+
+/* ==========================================================================
+   Monitoring & Charts Grid Overhaul
+   ========================================================================== */
+.dashboard-charts-container .card {
+  border-radius: var(--clp-radius-xl) !important;
+}
+
+.dashboard-charts-container .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px !important;
+}
+
+/* Time Range Dropdown in Monitoring */
+.form-select-period-of-time {
+  background-color: var(--clp-bg-input) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: 9999px !important;
+  padding: 6px 36px 6px 16px !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  color: var(--clp-text-heading) !important;
+  cursor: pointer;
+  box-shadow: var(--clp-shadow-sm);
+  transition: all var(--clp-transition-fast);
+}
+
+.form-select-period-of-time:hover {
+  border-color: var(--clp-border-hover) !important;
+  box-shadow: 0 0 12px var(--clp-accent-glow);
+}
+
+/* Chart Container Grid */
+.chart-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)) !important;
+  gap: 20px !important;
+  width: 100%;
+}
+
+.chart-row {
+  display: contents !important;
+}
+
+.chart-container .chart,
+html.dark body .chart-container .chart {
+  width: 100% !important;
+  margin: 0 !important;
+  background: var(--clp-bg-surface-elevated) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: var(--clp-radius-lg) !important;
+  box-shadow: var(--clp-shadow-sm) !important;
+  overflow: hidden;
+  transition: all var(--clp-transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container .chart:hover {
+  border-color: var(--clp-border-hover) !important;
+  box-shadow: var(--clp-shadow-glow), var(--clp-shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+/* Chart Header */
+.chart .chart-header,
+html.dark body .chart-container .chart .chart-header {
+  background: var(--clp-bg-surface) !important;
+  border-bottom: 1px solid var(--clp-border-subtle) !important;
+  padding: 14px 20px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.chart .chart-header h3,
+html.dark body .chart-container .chart .chart-header h3 {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--clp-text-heading) !important;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Subtle Glowing Dot Indicator next to Chart Titles */
+.chart .chart-header h3::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--clp-accent);
+  box-shadow: 0 0 8px var(--clp-accent);
+}
+
+.chart .chart-content {
+  padding: 16px !important;
+  position: relative;
+  min-height: 250px;
+}
+
+/* ==========================================================================
+   Highcharts Styling Hooks
+   ========================================================================== */
+.highcharts-background {
+  fill: transparent !important;
+}
+
+.highcharts-grid-line {
+  stroke: rgba(255, 255, 255, 0.05) !important;
+  stroke-dasharray: 4, 4;
+}
+
+.highcharts-axis-line {
+  stroke: var(--clp-border-subtle) !important;
+}
+
+.highcharts-tick {
+  stroke: transparent !important;
+}
+
+.highcharts-axis-labels text {
+  fill: var(--clp-text-muted) !important;
+  font-size: 11px !important;
+  font-family: var(--clp-font-mono) !important;
+}
+
+/* Custom Tooltip Glassmorphism */
+.highcharts-tooltip-box {
+  fill: var(--clp-bg-surface-elevated) !important;
+  fill-opacity: 0.9 !important;
+  stroke: var(--clp-border-hover) !important;
+  stroke-width: 1px !important;
+  rx: 8px;
+  ry: 8px;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+}
+
+.highcharts-tooltip text {
+  fill: var(--clp-text-heading) !important;
+  font-family: var(--clp-font-family) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+}
