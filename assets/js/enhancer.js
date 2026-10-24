@@ -124,8 +124,37 @@
   // Pre-apply theme immediately to avoid flash of unstyled content
   applyTheme(getActiveTheme(), false);
 
+  // Brand Title Customization (HectorTM)
+  function updateDocumentTitle() {
+    function fixTitle() {
+      if (document.title && document.title.includes('CloudPanel')) {
+        document.title = document.title.replace(/CloudPanel/g, 'HectorTM');
+      }
+    }
+    fixTitle();
+
+    if (!window._titleObserverAttached) {
+      window._titleObserverAttached = true;
+      const titleEl = document.querySelector('title');
+      if (titleEl) {
+        const observer = new MutationObserver(fixTitle);
+        observer.observe(titleEl, { childList: true, characterData: true, subtree: true });
+      } else {
+        document.addEventListener('DOMContentLoaded', () => {
+          const t = document.querySelector('title');
+          if (t) {
+            const observer = new MutationObserver(fixTitle);
+            observer.observe(t, { childList: true, characterData: true, subtree: true });
+          }
+        });
+      }
+    }
+  }
+  updateDocumentTitle();
+
   // Robust Lifecycle Execution
   function initializeEngine() {
+    try { updateDocumentTitle(); } catch (e) { console.warn('updateDocumentTitle:', e); }
     try { injectCustomBranding(); } catch (e) { console.warn('injectCustomBranding:', e); }
     try { injectHeaderBreadcrumb(); } catch (e) { console.warn('injectHeaderBreadcrumb:', e); }
     try { injectThemeSwitcher(); } catch (e) { console.warn('injectThemeSwitcher:', e); }
