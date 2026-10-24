@@ -81,40 +81,56 @@ html.dark body .header .nav-link-container a:hover {
   font-weight: 600;
 }
 
+/* Header Containers (Admin & Dashboard) */
+.header .navbar-right-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+}
+
 /* Header Instance Information (Admin Area) */
 .header-instance-information-container {
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 16px !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  overflow: hidden !important;
 }
 
 .header-instance-information-container ul {
   display: flex !important;
-  align-items: center;
-  gap: 16px;
+  align-items: center !important;
+  gap: 16px !important;
   padding: 0 !important;
   margin: 0 !important;
   float: none !important;
-  list-style: none;
+  list-style: none !important;
+  white-space: nowrap !important;
 }
 
 .header-instance-information-container ul li {
   display: inline-flex !important;
-  align-items: center;
-  gap: 5px;
+  align-items: center !important;
+  gap: 5px !important;
   margin: 0 !important;
-  font-size: 12.5px;
+  font-size: 12px !important;
+  white-space: nowrap !important;
 }
 
 .header-instance-information-container ul li strong {
   color: var(--clp-text-muted) !important;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 .header-instance-information-container ul li span,
 .header-instance-information-container ul li a {
   color: var(--clp-text-heading) !important;
-  font-weight: 500;
+  font-weight: 500 !important;
 }
 
 .header-instance-information-container ul li a:hover {
@@ -128,6 +144,8 @@ html.dark body .header .nav-link-container a:hover {
   display: flex !important;
   align-items: center !important;
   padding: 0 !important;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
 }
 
 .header .navbar-right > ul {
@@ -273,13 +291,22 @@ html[dir="rtl"] .header .navbar-right > ul > li {
 .clp-theme-dropdown-menu * {
   line-height: normal !important;
 }
-  padding: 10px;
-  z-index: 10000;
+
+.clp-theme-dropdown-menu.open,
+.clp-nav-theme-switcher.open .clp-theme-dropdown-menu {
+  display: block !important;
+  animation: clp-menu-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.clp-theme-dropdown-menu.open {
-  display: block;
-  animation: clp-menu-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+@keyframes clp-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .clp-theme-menu-header {
@@ -531,12 +558,21 @@ html.dark body .sidebar ul li.active a {
   display: flex;
   min-height: calc(100vh - 64px);
   position: relative;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+.main-container .container-limited-width {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
 }
 
 .main-content {
   padding: 24px 32px 60px 32px;
   width: 100%;
   max-width: 1600px;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .page-header {

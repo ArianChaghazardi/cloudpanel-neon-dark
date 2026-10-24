@@ -238,19 +238,23 @@
     toggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       menu.classList.toggle('open');
+      li.classList.toggle('open');
     });
 
     document.addEventListener('click', (e) => {
       if (!li.contains(e.target)) {
         menu.classList.remove('open');
+        li.classList.remove('open');
       }
     });
 
     li.querySelectorAll('.clp-theme-option').forEach(el => {
-      el.addEventListener('click', function () {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
         const themeId = this.getAttribute('data-theme-id');
         applyTheme(themeId, true);
         menu.classList.remove('open');
+        li.classList.remove('open');
       });
     });
   }
