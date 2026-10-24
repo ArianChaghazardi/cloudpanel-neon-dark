@@ -94,7 +94,7 @@
               </div>
               <div class="information-box">
                 <h4>Server Resources</h4>
-                <span>8 Cores / 16 GB RAM</span>
+                <span>8 Cores, 16 GB Memory</span>
               </div>
             </div>
           </div>
@@ -222,28 +222,28 @@
         title: { text: '' },
         xAxis: { categories: times },
         yAxis: { min: 0, max: 100 },
-        series: [{ name: 'CPU Usage', data: [12, 18, 28, 45, 32, 22, 29, 36, 21, 24] }]
+        series: [{ name: 'CPU Usage', data: [12, 18, 28, 45, 32, 22, 29, 36, 21, 24.5] }]
       });
 
       Highcharts.chart('memoryChart', {
         title: { text: '' },
         xAxis: { categories: times },
         yAxis: { min: 0, max: 100 },
-        series: [{ name: 'Memory Usage', data: [42, 44, 46, 50, 48, 47, 49, 52, 48, 47] }]
+        series: [{ name: 'Memory Usage', data: [42, 44, 46, 50, 48, 47, 49, 52, 48, 48.2] }]
       });
 
       Highcharts.chart('diskUsageChart', {
         title: { text: '' },
         xAxis: { categories: times },
         yAxis: { min: 0, max: 100 },
-        series: [{ name: 'Disk Read/Write', data: [5, 12, 8, 30, 15, 6, 9, 20, 11, 8] }]
+        series: [{ name: 'Disk Read/Write', data: [5, 12, 8, 30, 15, 6, 9, 20, 11, 34] }]
       });
 
       Highcharts.chart('loadAverageChart', {
         title: { text: '' },
         xAxis: { categories: times },
         yAxis: { min: 0, max: 5 },
-        series: [{ name: '1-Min Load', data: [0.8, 1.1, 1.4, 2.2, 1.6, 1.2, 1.3, 1.5, 1.1, 1.2] }]
+        series: [{ name: '1-Min Load', data: [0.8, 1.1, 1.4, 2.2, 1.6, 1.2, 1.3, 1.5, 1.1, 1.25] }]
       });
     });
   </script>

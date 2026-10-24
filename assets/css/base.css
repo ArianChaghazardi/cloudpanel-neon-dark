@@ -1,12 +1,15 @@
 /* ==========================================================================
-   CloudPanel Neon Dark - Base Styles & Resets
+   CloudPanel Neon Dark - Base Styles & Modern Typography
+   Imports Vazirmatn (for Persian RTL) and Plus Jakarta Sans / Inter
    ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 html,
 html.dark {
   background-color: var(--clp-bg-canvas) !important;
   color: var(--clp-text-body) !important;
-  font-family: var(--clp-font-family);
+  font-family: "Plus Jakarta Sans", "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -16,23 +19,35 @@ html.dark {
 body,
 html.dark body {
   background-color: var(--clp-bg-canvas) !important;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.04) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.03) 0px, transparent 50%) !important;
+  background-attachment: fixed !important;
   color: var(--clp-text-body) !important;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  font-family: inherit !important;
   transition: background-color var(--clp-transition-normal), color var(--clp-transition-normal);
+}
+
+/* Persian / RTL Specific Typography Enhancement */
+html[dir="rtl"],
+html[lang="fa"] {
+  font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 /* Text Selection */
 ::selection {
-  background-color: var(--clp-accent-glow);
-  color: var(--clp-text-heading);
+  background-color: var(--clp-accent);
+  color: #ffffff;
 }
 
 /* Custom Sleek Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -42,7 +57,7 @@ html.dark body {
 ::-webkit-scrollbar-thumb {
   background: var(--clp-bg-surface-elevated);
   border-radius: 9999px;
-  border: 2px solid var(--clp-bg-canvas);
+  border: 1px solid var(--clp-border-subtle);
   transition: background var(--clp-transition-fast);
 }
 
@@ -54,8 +69,9 @@ html.dark body {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   color: var(--clp-text-heading) !important;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-family: inherit !important;
 }
 
 p {
@@ -79,7 +95,7 @@ html.dark a:hover {
 
 /* Code & Pre elements */
 code, pre, kbd {
-  font-family: var(--clp-font-mono) !important;
+  font-family: "JetBrains Mono", var(--clp-font-mono) !important;
   background-color: var(--clp-bg-surface-elevated) !important;
   border: 1px solid var(--clp-border-subtle) !important;
   border-radius: var(--clp-radius-sm);
