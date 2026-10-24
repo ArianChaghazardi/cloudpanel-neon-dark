@@ -3,6 +3,10 @@
 > **A professional, high-contrast Dark UI redesign & fundamental UX modernization for [CloudPanel](https://www.cloudpanel.io).**  
 > *Features 7 Designer Themes, Command Palette (Ctrl+K), Live Search/Filtering, Card/Table View Toggle, Monitoring Overhaul, and 100% Update-Proof Architecture.*
 
+<p align="center">
+  <img src="preview/preview.png" alt="CloudPanel Neon Dark Preview" width="100%" />
+</p>
+
 ---
 
 ## 💎 ویژگی‌های بازطراحی بنیادی UX و UI
@@ -10,18 +14,20 @@
 ### ۱. انقلاب در تجربه کاربری (Fundamental UX Overhaul):
 * ⚡ **پالت دستورات سریع (Spotlight Command Palette - `Ctrl + K` / `Cmd + K`):**
   * جستجوی سریع و بدون ماوس در بین تمام بخش‌ها، دامنه‌ها، تنظیمات، لاگ‌ها و اکشن‌ها (مشابه Linear و Raycast).
-  * کلید میانبر `Ctrl+K` در هدر یا در داک شناور پایین صفحه در دسترس است.
+  * تعبیه دکمه Quick Search کپسولی در هدر تاپ‌بار در کنار میانبر کیبورد.
 * 🌐 **تحول بخش مدیریت سایت‌ها (Sites UX Revolution):**
   * **نوار ابزار و جستجوی آنی (Live Search & Filter Toolbar):** فیلتر فوری دامنه‌ها به محض تایپ کردن، بدون نیاز به رفرش صفحه.
   * **فیلتر تگ‌ها (Type Pills):** دسته‌بندی سریع بر اساس PHP، Node.js، Python، Reverse Proxy و Static.
   * **سوئیچ بین حالت جدولی (Table View) و حالت کارتی مدرن (Card Grid View):** امکان مشاهده دامنه‌ها به صورت کارت‌های شیک و مدرن همراه با آیکون‌های کپی سریع دامنه و مشاهده سایت در تب جدید.
 * 📊 **تحول بخش داشبورد و مانیتورینگ (Executive Monitoring & Health Bar):**
-  * **نوار وضعیت لحظه‌ای سرور (Live Health Ribbon):** نشانگر پالس سلامت، دکمه کپی دستور SSH با یک کلیک (`ssh root@ip`).
+  * **نوار وضعیت لحظه‌ای سرور (Live Health Ribbon):** گیج‌های دایره‌ای مدرن (Radial Gauges)، نشانگر پالس سلامت، دکمه کپی دستور SSH با یک کلیک (`ssh root@ip`).
   * **مدرن‌سازی چارت‌های Highcharts:** تبدیل خودکار خطوط ساده به **منحنی‌های نرم گرادینت‌دار (Smooth AreaSpline)** به همراه تولتیپ‌های بلورین شیشه‌ای.
   * **آمارهای محاسباتی آنی چارت‌ها:** نمایش میانگین (`Avg`) و اوج مصرف (`Peak`) زیر عنوان هر نمودار.
   * **سوئیچ چیدمان چارت‌ها:** امکان تغییر چیدمان نمودارها از حالت ۲x۲ به حالت فوکوس عرض‌کامل (Focus View).
-* 🚢 **داک شناور ابزارها (Floating Quick Dock):**
-  * دسترسی سریع در پایین صفحه به سرچ، داشبورد، لیست سایت‌ها، افزودن سایت جدید و تعویض سریع تم.
+* 🎨 **سوئیچر تم پیشرفته در تاپ‌بار (Topbar Theme Switcher):**
+  * تعبیه منوی کشویی انتخاب ۷ تم اختصاصی مستقیماً روی تاپ‌بار هدر در کنار پروفایل کاربری با نشانگر رنگی زنده.
+* 📱 **نوار ناوبری اختصاصی موبایل (Mobile Bottom Navigation):**
+  * ناوبری مینیمال شیشه‌ای چسبیده به پایین برای گوشی‌های هوشمند با دسترسی فوری به بخش‌های اصلی.
 * 🔔 **سیستم اعلان تست اختصاصی (Toast Notifications):**
   * بازخورد فوری هنگام کپی IP، دامنه‌ها و تعویض تم.
 

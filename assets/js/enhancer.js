@@ -91,8 +91,23 @@
     html.setAttribute('data-clp-theme', themeId);
     localStorage.setItem(STORAGE_THEME, themeId);
 
+    const themeObj = THEMES.find(t => t.id === themeId) || THEMES[0];
+
+    const activeDot = document.getElementById('clp-theme-active-dot');
+    if (activeDot) {
+      activeDot.style.background = themeObj.color;
+      activeDot.style.boxShadow = `0 0 10px ${themeObj.color}`;
+    }
+    const activeName = document.getElementById('clp-theme-active-name');
+    if (activeName) {
+      activeName.textContent = themeObj.name;
+    }
+
     document.querySelectorAll('.clp-theme-option').forEach(el => {
-      el.classList.toggle('active', el.getAttribute('data-theme-id') === themeId);
+      const isActive = el.getAttribute('data-theme-id') === themeId;
+      el.classList.toggle('active', isActive);
+      const check = el.querySelector('.clp-theme-check');
+      if (check) check.style.display = isActive ? 'inline-block' : 'none';
     });
 
     if (window.Highcharts && window.Highcharts.charts) {
@@ -102,8 +117,7 @@
     }
 
     if (notify) {
-      const themeObj = THEMES.find(t => t.id === themeId);
-      showToast(`Visual Theme set to ${themeObj ? themeObj.name : themeId}`);
+      showToast(`Visual Theme set to ${themeObj.name}`);
     }
   }
 
@@ -112,14 +126,13 @@
 
   // Robust Lifecycle Execution
   function initializeEngine() {
+    try { injectHeaderBreadcrumb(); } catch (e) { console.warn('injectHeaderBreadcrumb:', e); }
     try { injectThemeSwitcher(); } catch (e) { console.warn('injectThemeSwitcher:', e); }
     try { setupHighchartsHook(); } catch (e) { console.warn('setupHighchartsHook:', e); }
     try { setupCommandPalette(); } catch (e) { console.warn('setupCommandPalette:', e); }
-    try { injectHeaderBreadcrumb(); } catch (e) { console.warn('injectHeaderBreadcrumb:', e); }
     try { enhanceSitesPageUX(); } catch (e) { console.warn('enhanceSitesPageUX:', e); }
     try { enhanceDashboardUX(); } catch (e) { console.warn('enhanceDashboardUX:', e); }
     try { injectMobileBottomNavigation(); } catch (e) { console.warn('injectMobileBottomNavigation:', e); }
-    try { injectFloatingQuickDock(); } catch (e) { console.warn('injectFloatingQuickDock:', e); }
 
     // Start Real-Time Live Vitals Engine
     startLiveVitalsEngine();
@@ -158,44 +171,69 @@
   }
 
   // ==========================================================================
-  // 2. Visual Theme Switcher (7 Designer Palettes)
+  // 2. Visual Theme Switcher (7 Designer Palettes) - Topbar First-Class Item
   // ==========================================================================
   function injectThemeSwitcher() {
-    if (document.querySelector('.clp-theme-dock')) return;
+    if (document.querySelector('.clp-nav-theme-switcher')) return;
 
-    const dock = document.createElement('div');
-    dock.className = 'clp-theme-dock';
+    const navbarRightUl = document.querySelector('.header .navbar-right > ul') || document.querySelector('.navbar-right > ul');
+    if (!navbarRightUl) return;
 
-    dock.innerHTML = `
-      <button class="clp-theme-toggle" id="clp-theme-toggle-btn" title="Personalize Visual Palette" aria-label="Theme Switcher">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    // Hide native theme switch if present
+    const nativeThemeLi = navbarRightUl.querySelector('.theme-switcher');
+    if (nativeThemeLi) {
+      nativeThemeLi.style.display = 'none';
+    }
+
+    const currentTheme = getActiveTheme();
+    const currentThemeObj = THEMES.find(t => t.id === currentTheme) || THEMES[0];
+
+    const li = document.createElement('li');
+    li.className = 'clp-nav-theme-switcher dropdown';
+
+    li.innerHTML = `
+      <button class="clp-theme-nav-btn" id="clp-theme-toggle-btn" type="button" title="Tailored Visual Palette (${THEMES.length} Themes)" aria-label="Change Theme">
+        <span class="clp-theme-dot" id="clp-theme-active-dot" style="background: ${currentThemeObj.color}; box-shadow: 0 0 10px ${currentThemeObj.color};"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"/>
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
         </svg>
+        <span class="clp-theme-nav-label" id="clp-theme-active-name">${currentThemeObj.name}</span>
+        <svg class="clp-theme-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="clp-theme-menu" id="clp-theme-menu">
+      <div class="clp-theme-dropdown-menu" id="clp-theme-menu">
         <div class="clp-theme-menu-header">
           <div class="title">Visual Aesthetics</div>
           <div class="subtitle">Select your tailored designer palette</div>
         </div>
         <div class="clp-theme-list">
-          ${THEMES.map(t => `
-            <div class="clp-theme-option ${t.id === getActiveTheme() ? 'active' : ''}" data-theme-id="${t.id}">
+          ${THEMES.map(t => {
+            const isActive = t.id === currentTheme;
+            return `
+            <div class="clp-theme-option ${isActive ? 'active' : ''}" data-theme-id="${t.id}">
               <div class="clp-theme-swatch" style="background: ${t.gradient};"></div>
               <div class="clp-theme-info">
                 <div class="name">${t.name}</div>
                 <div class="desc">${t.desc}</div>
               </div>
+              <div class="clp-theme-check" style="display: ${isActive ? 'inline-block' : 'none'};">✓</div>
             </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `;
 
-    document.body.appendChild(dock);
+    // Insert before user avatar or admin area
+    const userAvatar = navbarRightUl.querySelector('.user-avatar');
+    if (userAvatar) {
+      navbarRightUl.insertBefore(li, userAvatar);
+    } else {
+      navbarRightUl.appendChild(li);
+    }
 
-    const toggleBtn = dock.querySelector('#clp-theme-toggle-btn');
-    const menu = dock.querySelector('#clp-theme-menu');
+    const toggleBtn = li.querySelector('#clp-theme-toggle-btn');
+    const menu = li.querySelector('#clp-theme-menu');
 
     toggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -203,12 +241,12 @@
     });
 
     document.addEventListener('click', (e) => {
-      if (!dock.contains(e.target)) {
+      if (!li.contains(e.target)) {
         menu.classList.remove('open');
       }
     });
 
-    dock.querySelectorAll('.clp-theme-option').forEach(el => {
+    li.querySelectorAll('.clp-theme-option').forEach(el => {
       el.addEventListener('click', function () {
         const themeId = this.getAttribute('data-theme-id');
         applyTheme(themeId, true);
@@ -388,36 +426,43 @@
   }
 
   // ==========================================================================
-  // 4. Header Breadcrumb & Global Quick Action Spotlight
+  // 4. Header Spotlight Search Button (Ctrl+K)
   // ==========================================================================
   function injectHeaderBreadcrumb() {
-    const headerLeft = document.querySelector('.header .header-left') || document.querySelector('.header');
-    if (!headerLeft || document.querySelector('.clp-header-spotlight-btn')) return;
+    if (document.querySelector('.clp-nav-spotlight')) return;
 
-    const spotlightBtn = document.createElement('button');
-    spotlightBtn.type = 'button';
-    spotlightBtn.className = 'clp-header-spotlight-btn';
-    spotlightBtn.innerHTML = `
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="m21 21-4.3-4.3"/>
-      </svg>
-      <span>Quick Search...</span>
-      <kbd>Ctrl K</kbd>
+    const navbarRightUl = document.querySelector('.header .navbar-right > ul') || document.querySelector('.navbar-right > ul');
+    if (!navbarRightUl) return;
+
+    const li = document.createElement('li');
+    li.className = 'clp-nav-spotlight';
+
+    li.innerHTML = `
+      <button class="clp-header-spotlight-btn" id="clp-header-spotlight-trigger" type="button" title="Spotlight Command Palette (Ctrl+K)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <span class="clp-spotlight-label">Quick Search...</span>
+        <kbd class="clp-spotlight-kbd">Ctrl K</kbd>
+      </button>
     `;
 
-    spotlightBtn.addEventListener('click', () => {
+    // Insert as the first item before theme switcher or other items
+    const themeSwitcher = navbarRightUl.querySelector('.clp-nav-theme-switcher');
+    if (themeSwitcher) {
+      navbarRightUl.insertBefore(li, themeSwitcher);
+    } else {
+      navbarRightUl.insertBefore(li, navbarRightUl.firstChild);
+    }
+
+    li.querySelector('#clp-header-spotlight-trigger').addEventListener('click', () => {
       const palette = document.getElementById('clp-command-palette');
       if (palette) {
         palette.classList.add('open');
         document.getElementById('clp-palette-search')?.focus();
       }
     });
-
-    const userBlock = document.querySelector('.header .user-container') || document.querySelector('.header .header-right');
-    if (userBlock) {
-      userBlock.parentNode.insertBefore(spotlightBtn, userBlock);
-    }
   }
 
   // ==========================================================================

@@ -164,9 +164,11 @@ html.dark body .form-control:disabled {
   cursor: pointer;
 }
 
-/* Primary Button with Neon Blue Accent */
+/* Primary Button with Neon Blue / Palette Accent */
 .btn-primary,
-.btn-submit {
+.btn-submit,
+.btn-blue,
+a.btn-blue {
   background: var(--clp-accent-gradient) !important;
   color: #ffffff !important;
   border: none !important;
@@ -174,21 +176,41 @@ html.dark body .form-control:disabled {
 }
 
 .btn-primary:hover,
-.btn-submit:hover {
-  filter: brightness(1.1);
+.btn-submit:hover,
+.btn-blue:hover,
+a.btn-blue:hover {
+  filter: brightness(1.15);
   box-shadow: 0 4px 18px var(--clp-accent-glow) !important;
   transform: translateY(-1px);
+  color: #ffffff !important;
 }
 
 .btn-primary:active,
-.btn-submit:active {
+.btn-submit:active,
+.btn-blue:active,
+a.btn-blue:active {
   transform: translateY(0);
+}
+
+.btn-outline-blue,
+a.btn-outline-blue {
+  background: transparent !important;
+  border: 1px solid var(--clp-accent) !important;
+  color: var(--clp-accent-hover) !important;
+}
+
+.btn-outline-blue:hover,
+a.btn-outline-blue:hover {
+  background: var(--clp-accent-gradient) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px var(--clp-accent-glow) !important;
 }
 
 /* Secondary & Gray Buttons */
 .btn-gray,
 .btn-white,
 .btn-secondary,
+.btn-update,
 html.dark body .btn-gray,
 html.dark body .btn-white {
   background-color: var(--clp-bg-surface-elevated) !important;
@@ -199,6 +221,7 @@ html.dark body .btn-white {
 .btn-gray:hover,
 .btn-white:hover,
 .btn-secondary:hover,
+.btn-update:hover,
 html.dark body .btn-gray:hover,
 html.dark body .btn-white:hover {
   background-color: var(--clp-bg-surface-hover) !important;
@@ -207,17 +230,37 @@ html.dark body .btn-white:hover {
   box-shadow: var(--clp-shadow-sm);
 }
 
-/* Danger Button */
-.btn-danger {
+/* Danger / Red Button */
+.btn-danger,
+.btn-red,
+a.btn-red {
   background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  color: #ffffff !important;
   border: none !important;
   box-shadow: 0 2px 10px var(--clp-danger-glow) !important;
 }
 
-.btn-danger:hover {
-  filter: brightness(1.1);
+.btn-danger:hover,
+.btn-red:hover,
+a.btn-red:hover {
+  filter: brightness(1.15);
   box-shadow: 0 4px 18px var(--clp-danger-glow) !important;
   transform: translateY(-1px);
+  color: #ffffff !important;
+}
+
+.btn-outline-red,
+a.btn-outline-red {
+  background: transparent !important;
+  border: 1px solid #ef4444 !important;
+  color: #f87171 !important;
+}
+
+.btn-outline-red:hover,
+a.btn-outline-red:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px var(--clp-danger-glow) !important;
 }
 
 /* ==========================================================================
@@ -307,4 +350,192 @@ html.dark body .dropdown-menu .dropdown-item:hover {
   background: rgba(59, 130, 246, 0.15) !important;
   color: #60a5fa !important;
   border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+/* ==========================================================================
+   Site Info Header Card (Site Details Overview)
+   ========================================================================== */
+.site-info-container,
+html.dark body .site-info-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+  background: var(--clp-bg-surface) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: var(--clp-radius-xl) !important;
+  padding: 20px 24px !important;
+  margin: 16px 0 24px 0 !important;
+  box-shadow: var(--clp-shadow-sm) !important;
+}
+
+.site-info-box {
+  margin: 0 !important;
+  min-width: 0 !important;
+}
+
+.site-info-box h3 {
+  font-size: 11.5px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--clp-text-muted) !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+
+.site-info-value {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--clp-text-heading) !important;
+}
+
+.site-info-value a {
+  color: var(--clp-accent) !important;
+  transition: all var(--clp-transition-fast);
+}
+
+.site-info-value a:hover {
+  color: var(--clp-accent-hover) !important;
+  text-shadow: 0 0 10px var(--clp-accent-glow);
+}
+
+/* ==========================================================================
+   New Site Application Cards (/site/new)
+   ========================================================================== */
+.new-site-container-fix {
+  width: 100% !important;
+  max-width: 1050px !important;
+  margin: 0 auto !important;
+}
+
+.site-type-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 20px !important;
+  margin: 24px 0 !important;
+}
+
+.site-type-container .application {
+  margin: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 220px !important;
+  background: var(--clp-bg-surface-elevated) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: var(--clp-radius-xl) !important;
+  padding: 24px 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-shadow: var(--clp-shadow-sm) !important;
+  transition: all var(--clp-transition-normal) !important;
+}
+
+.site-type-container .application:hover {
+  border-color: var(--clp-accent) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), var(--clp-shadow-glow) !important;
+  transform: translateY(-4px) !important;
+}
+
+.site-progress-container ul li {
+  border-bottom-color: var(--clp-border-subtle) !important;
+}
+
+.site-progress-container ul li a.active {
+  border-bottom: 2px solid var(--clp-accent) !important;
+  color: var(--clp-accent) !important;
+}
+
+/* ==========================================================================
+   Code & Vhost Editor (Ace Editor)
+   ========================================================================== */
+#editor,
+.ace_editor {
+  background: var(--clp-bg-surface-elevated) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: var(--clp-radius-md) !important;
+  font-family: var(--clp-font-mono) !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
+}
+
+.ace_gutter {
+  background: var(--clp-bg-surface) !important;
+  color: var(--clp-text-muted) !important;
+  border-right: 1px solid var(--clp-border-subtle) !important;
+}
+
+.ace_gutter-active-line {
+  background: var(--clp-bg-surface-hover) !important;
+  color: var(--clp-accent) !important;
+}
+
+.ace_active-line {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.ace_cursor {
+  color: var(--clp-accent) !important;
+}
+
+.ace_selection {
+  background: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* ==========================================================================
+   Logs Viewer (table.log-messages)
+   ========================================================================== */
+.log-messages-scrollable-container {
+  background: var(--clp-bg-surface) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: var(--clp-radius-lg) !important;
+  padding: 12px !important;
+}
+
+table.log-messages tr.log-message:hover,
+table.log-messages tr.log-message-active {
+  background-color: var(--clp-bg-surface-hover) !important;
+}
+
+table.log-messages tr.log-message-information td {
+  background-color: var(--clp-bg-surface-elevated) !important;
+  border-radius: var(--clp-radius-md) !important;
+}
+
+/* ==========================================================================
+   Events Date Range Picker & Popups
+   ========================================================================== */
+.custom-datetime-range-container {
+  background: var(--clp-bg-surface-elevated) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  border-radius: var(--clp-radius-xl) !important;
+  box-shadow: var(--clp-shadow-lg) !important;
+  color: var(--clp-text-body) !important;
+}
+
+.datetime-range-input {
+  background: var(--clp-bg-input) !important;
+  border: 1px solid var(--clp-border-default) !important;
+  color: var(--clp-text-heading) !important;
+  border-radius: var(--clp-radius-md) !important;
+}
+
+.custom-datetimepicker-container .datetimepicker:first-child {
+  border-right: 1px dashed var(--clp-border-subtle) !important;
+}
+
+/* ==========================================================================
+   Notifications Table
+   ========================================================================== */
+table.table-notifications td.unread-info {
+  border-left: 3px solid var(--clp-accent) !important;
+}
+
+table.table-notifications td.unread-warning {
+  border-left: 3px solid var(--clp-warning) !important;
+}
+
+table.table-notifications td.unread-critical {
+  border-left: 3px solid var(--clp-danger) !important;
 }

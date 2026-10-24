@@ -853,61 +853,17 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 /* ==========================================================================
-   9. Floating Quick Dock (Desktop)
+   9. Floating Quick Dock (Disabled by default to keep clean SaaS view)
    ========================================================================== */
 .clp-quick-dock {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--clp-bg-glass);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--clp-border-hover);
-  border-radius: 9999px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), var(--clp-shadow-glow);
-  padding: 6px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 9998;
-  transition: all var(--clp-transition-normal);
-}
-
-.clp-dock-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  color: var(--clp-text-muted);
-  background: transparent;
-  border: 1px solid transparent;
-  transition: all var(--clp-transition-fast);
-  cursor: pointer;
-  text-decoration: none !important;
-}
-
-.clp-dock-item:hover {
-  color: var(--clp-text-heading);
-  background: var(--clp-bg-surface-elevated);
-  border-color: var(--clp-border-default);
-  box-shadow: 0 0 12px var(--clp-accent-glow);
-  transform: translateY(-2px);
-}
-
-.clp-dock-item.highlight {
-  background: var(--clp-accent-gradient);
-  color: #ffffff;
-  box-shadow: 0 0 12px var(--clp-accent-glow);
+  display: none !important;
 }
 
 /* ==========================================================================
-   10. Mobile App Bottom Navigation Bar (< 768px)
+   10. Mobile App Bottom Navigation Bar (< 768px ONLY)
    ========================================================================== */
 .clp-mobile-nav {
-  display: none;
+  display: none !important;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -920,7 +876,6 @@ html[dir="rtl"] .clp-sites-search-input {
   z-index: 9999;
   padding: 0 12px;
   box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.5);
-  display: flex;
   align-items: center;
   justify-content: space-around;
 }

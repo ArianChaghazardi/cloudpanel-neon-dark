@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary screenshots / previews
+preview/*.png
+!preview/preview.png
