@@ -51,18 +51,22 @@ if [ -f "${CLP_CONF}" ]; then
     cp "${CLP_CONF}" "${BACKUP_FILE}"
     echo -e "${YELLOW}  Backup created at: ${BACKUP_FILE}${NC}"
 
-    # Check if already injected
-    if grep -q "clp-custom" "${CLP_CONF}"; then
-        echo -e "${YELLOW}  Nginx configuration already contains theme injection. Updating rules...${NC}"
-        # Remove old block if exists
-        sed -i '/# BEGIN CLOUDPANEL NEON DARK/,/# END CLOUDPANEL NEON DARK/d' "${CLP_CONF}"
-    fi
+    # Use Python for 100% reliable AST-safe insertion without escaping bugs
+    python3 -c "
+import re
 
-    # Prepare injection snippet
-    INJECTION_BLOCK=$(cat << 'EOF'
+conf_path = '${CLP_CONF}'
+with open(conf_path, 'r') as f:
+    content = f.read()
+
+# Remove existing block if present
+if '# BEGIN CLOUDPANEL NEON DARK' in content:
+    content = re.sub(r'\s*# BEGIN CLOUDPANEL NEON DARK.*?# END CLOUDPANEL NEON DARK\n?', '', content, flags=re.DOTALL)
+
+injection = '''
   # BEGIN CLOUDPANEL NEON DARK
   sub_filter_types text/html;
-  sub_filter '</head>' '<link rel="stylesheet" href="/clp-custom/css/theme.css"><script defer src="/clp-custom/js/enhancer.js"></script></head>';
+  sub_filter '</head>' '<link rel=\"stylesheet\" href=\"/clp-custom/css/theme.css\"><script defer src=\"/clp-custom/js/enhancer.js\"></script></head>';
   sub_filter_once on;
 
   location /clp-custom/ {
@@ -71,11 +75,17 @@ if [ -f "${CLP_CONF}" ]; then
     expires 30d;
   }
   # END CLOUDPANEL NEON DARK
-EOF
-)
+'''
 
-    # Insert right before the last closing brace '}' of the server block
-    sed -i '/^}$/i '"${INJECTION_BLOCK}"'' "${CLP_CONF}"
+idx = content.rfind('}')
+if idx != -1:
+    new_content = content[:idx].rstrip() + '\n' + injection + '\n}\n'
+    with open(conf_path, 'w') as f:
+        f.write(new_content)
+    print('  ✓ Nginx configuration injected cleanly.')
+else:
+    print('  [!] Closing server brace not found in ' + conf_path)
+"
 
     echo -e "${GREEN}✓ Nginx configuration updated successfully.${NC}"
 else
@@ -104,7 +114,7 @@ fi
 echo -e "${BLUE}[4/4] Setting up APT upgrade persistence hook...${NC}"
 cat << 'EOF' > "${APT_HOOK}"
 DPkg::Post-Invoke {
-    "if [ -d /home/clp/custom-theme ] && [ -f /home/clp/services/nginx/sites-enabled/cloudpanel.conf ]; then if ! grep -q 'clp-custom' /home/clp/services/nginx/sites-enabled/cloudpanel.conf; then sed -i '/^}$/i \  sub_filter_types text/html;\n  sub_filter \"</head>\" \"<link rel=\\\"stylesheet\\\" href=\\\"/clp-custom/css/theme.css\\\"><script defer src=\\\"/clp-custom/js/enhancer.js\\\"></script></head>\";\n  sub_filter_once on;\n  location /clp-custom/ { alias /home/clp/custom-theme/; access_log off; expires 30d; }' /home/clp/services/nginx/sites-enabled/cloudpanel.conf; systemctl restart clp-nginx 2>/dev/null || true; fi; fi";
+    "if [ -d /home/clp/custom-theme ] && [ -f /home/clp/services/nginx/sites-enabled/cloudpanel.conf ]; then python3 -c 'import re; p=\"/home/clp/services/nginx/sites-enabled/cloudpanel.conf\"; c=open(p).read(); (open(p,\"w\").write(c[:c.rfind(\"}\")].rstrip()+\"\n  # BEGIN CLOUDPANEL NEON DARK\n  sub_filter_types text/html;\n  sub_filter \"</head>\" \"<link rel=\\\"stylesheet\\\" href=\\\"/clp-custom/css/theme.css\\\"><script defer src=\\\"/clp-custom/js/enhancer.js\\\"></script></head>\";\n  sub_filter_once on;\n  location /clp-custom/ { alias /home/clp/custom-theme/; access_log off; expires 30d; }\n  # END CLOUDPANEL NEON DARK\n}\n\")) if \"# BEGIN CLOUDPANEL NEON DARK\" not in c else None' 2>/dev/null || true; systemctl restart clp-nginx 2>/dev/null || true; fi";
 };
 EOF
 chmod 644 "${APT_HOOK}"
