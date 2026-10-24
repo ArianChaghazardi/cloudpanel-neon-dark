@@ -89,7 +89,7 @@ cloudpanel-neon-dark/
    sub_filter '</head>' '<link rel="stylesheet" href="/clp-custom/css/theme.css"><script defer src="/clp-custom/js/enhancer.js"></script></head>';
    sub_filter_once on;
 
-   location /clp-custom/ {
+   location ^~ /clp-custom/ {
        alias /home/clp/custom-theme/;
        access_log off;
        expires 30d;

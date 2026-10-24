@@ -63,13 +63,14 @@ with open(conf_path, 'r') as f:
 if '# BEGIN CLOUDPANEL NEON DARK' in content:
     content = re.sub(r'\s*# BEGIN CLOUDPANEL NEON DARK.*?# END CLOUDPANEL NEON DARK\n?', '', content, flags=re.DOTALL)
 
+# Note: ^~ ensures priority over CloudPanel regex static asset location
 injection = '''
   # BEGIN CLOUDPANEL NEON DARK
   sub_filter_types text/html;
   sub_filter '</head>' '<link rel=\"stylesheet\" href=\"/clp-custom/css/theme.css\"><script defer src=\"/clp-custom/js/enhancer.js\"></script></head>';
   sub_filter_once on;
 
-  location /clp-custom/ {
+  location ^~ /clp-custom/ {
     alias /home/clp/custom-theme/;
     access_log off;
     expires 30d;
@@ -96,7 +97,7 @@ else
     echo "  sub_filter '</head>' '<link rel=\"stylesheet\" href=\"/clp-custom/css/theme.css\"><script defer src=\"/clp-custom/js/enhancer.js\"></script></head>';"
     echo "  sub_filter_once on;"
     echo ""
-    echo "  location /clp-custom/ {"
+    echo "  location ^~ /clp-custom/ {"
     echo "    alias ${THEME_DIR}/;"
     echo "  }"
     echo -e "${NC}"
@@ -114,7 +115,7 @@ fi
 echo -e "${BLUE}[4/4] Setting up APT upgrade persistence hook...${NC}"
 cat << 'EOF' > "${APT_HOOK}"
 DPkg::Post-Invoke {
-    "if [ -d /home/clp/custom-theme ] && [ -f /home/clp/services/nginx/sites-enabled/cloudpanel.conf ]; then python3 -c 'import re; p=\"/home/clp/services/nginx/sites-enabled/cloudpanel.conf\"; c=open(p).read(); (open(p,\"w\").write(c[:c.rfind(\"}\")].rstrip()+\"\n  # BEGIN CLOUDPANEL NEON DARK\n  sub_filter_types text/html;\n  sub_filter \"</head>\" \"<link rel=\\\"stylesheet\\\" href=\\\"/clp-custom/css/theme.css\\\"><script defer src=\\\"/clp-custom/js/enhancer.js\\\"></script></head>\";\n  sub_filter_once on;\n  location /clp-custom/ { alias /home/clp/custom-theme/; access_log off; expires 30d; }\n  # END CLOUDPANEL NEON DARK\n}\n\")) if \"# BEGIN CLOUDPANEL NEON DARK\" not in c else None' 2>/dev/null || true; systemctl restart clp-nginx 2>/dev/null || true; fi";
+    "if [ -d /home/clp/custom-theme ] && [ -f /home/clp/services/nginx/sites-enabled/cloudpanel.conf ]; then python3 -c 'import re; p=\"/home/clp/services/nginx/sites-enabled/cloudpanel.conf\"; c=open(p).read(); (open(p,\"w\").write(c[:c.rfind(\"}\")].rstrip()+\"\n  # BEGIN CLOUDPANEL NEON DARK\n  sub_filter_types text/html;\n  sub_filter \"</head>\" \"<link rel=\\\"stylesheet\\\" href=\\\"/clp-custom/css/theme.css\\\"><script defer src=\\\"/clp-custom/js/enhancer.js\\\"></script></head>\";\n  sub_filter_once on;\n  location ^~ /clp-custom/ { alias /home/clp/custom-theme/; access_log off; expires 30d; }\n  # END CLOUDPANEL NEON DARK\n}\n\")) if \"# BEGIN CLOUDPANEL NEON DARK\" not in c else None' 2>/dev/null || true; systemctl restart clp-nginx 2>/dev/null || true; fi";
 };
 EOF
 chmod 644 "${APT_HOOK}"
