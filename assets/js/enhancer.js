@@ -154,6 +154,7 @@
 
   // Robust Lifecycle Execution
   function initializeEngine() {
+    try { removeFooter(); } catch (e) { console.warn('removeFooter:', e); }
     try { updateDocumentTitle(); } catch (e) { console.warn('updateDocumentTitle:', e); }
     try { injectCustomBranding(); } catch (e) { console.warn('injectCustomBranding:', e); }
     try { injectHeaderBreadcrumb(); } catch (e) { console.warn('injectHeaderBreadcrumb:', e); }
@@ -166,6 +167,28 @@
 
     // Start Real-Time Live Vitals Engine
     startLiveVitalsEngine();
+  }
+
+  // ==========================================================================
+  // Completely Eliminate Native CloudPanel Footer
+  // ==========================================================================
+  function removeFooter() {
+    document.querySelectorAll('footer, .footer, footer.fixed-bottom').forEach(f => f.remove());
+  }
+
+  // Observer to permanently prevent any footer from rendering
+  if (!window._footerObserverAttached) {
+    window._footerObserverAttached = true;
+    const footerObserver = new MutationObserver(() => {
+      removeFooter();
+    });
+    if (document.body) {
+      footerObserver.observe(document.body, { childList: true, subtree: true });
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        footerObserver.observe(document.body, { childList: true, subtree: true });
+      });
+    }
   }
 
   // ==========================================================================
@@ -1166,6 +1189,9 @@
   // ==========================================================================
   function injectMobileBottomNavigation() {
     if (document.querySelector('.clp-mobile-nav')) return;
+    if (window.location.pathname.startsWith('/login') || 
+        document.body.classList.contains('login-page') || 
+        document.querySelector('.login-container')) return;
 
     const currentPath = window.location.pathname;
     const isDashboard = currentPath.includes('/dashboard');

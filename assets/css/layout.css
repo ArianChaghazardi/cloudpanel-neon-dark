@@ -695,23 +695,22 @@ html.dark body .tab-container ul li.active a {
   box-shadow: 0 2px 10px var(--clp-accent-glow);
 }
 
-/* Footer */
+/* Footer - Completely removed across all viewports and devices */
+footer,
+footer.footer,
 .footer,
-html.dark body .footer {
-  background: transparent !important;
-  border-top: 1px solid var(--clp-border-subtle) !important;
-  padding: 24px 32px;
-  color: var(--clp-text-muted);
-  font-size: 12.5px;
-}
-
-.footer ul li a,
-html.dark body .footer ul li a {
-  color: var(--clp-text-muted) !important;
-}
-
-.footer ul li a:hover,
-html.dark body .footer ul li a:hover {
-  color: var(--clp-accent) !important;
-  text-shadow: none;
+.footer.fixed-bottom,
+html.dark body .footer,
+html.dark body footer {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
 }

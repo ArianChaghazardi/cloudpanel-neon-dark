@@ -988,42 +988,403 @@ html[dir="rtl"] .clp-toast-container {
 }
 
 @media (max-width: 767.98px) {
-  body {
-    padding-bottom: 74px !important;
+  /* ==========================================================================
+     Mobile First Core Layout (< 768px)
+     ========================================================================== */
+  body,
+  html body,
+  html.dark body {
+    padding-bottom: 0 !important;
   }
 
-  .clp-mobile-nav {
+  /* 1. Header Precision Fit (Clean 56px Bar, Zero Horizontal Overflow) */
+  .header,
+  html body .header,
+  html.dark body .header {
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    padding: 0 12px !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .header .logo,
+  html body .header .logo,
+  html.dark body .header .logo {
+    height: 56px !important;
+    line-height: 56px !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header .logo .clp-brand-logo {
+    font-size: 19px !important;
+  }
+
+  /* Hide redundant desktop text links in topbar (use bottom nav instead) */
+  .header .nav-link-container,
+  html body .header .nav-link-container,
+  html.dark body .header .nav-link-container {
+    display: none !important;
+  }
+
+  /* Hide instance specs in header on mobile */
+  .header-instance-information-container,
+  html body .header-instance-information-container,
+  html.dark body .header-instance-information-container {
+    display: none !important;
+  }
+
+  /* Hide long desktop search pill in topbar on mobile */
+  .clp-nav-spotlight,
+  li.clp-nav-spotlight,
+  html body .header .navbar-right > ul > li.clp-nav-spotlight,
+  html.dark body .header .navbar-right > ul > li.clp-nav-spotlight {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+
+  /* Navbar Right compact capsules */
+  .header .navbar-right,
+  html body .header .navbar-right,
+  html.dark body .header .navbar-right {
+    height: 56px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    width: auto !important;
+  }
+
+  .header .navbar-right > ul,
+  html body .header .navbar-right > ul,
+  html.dark body .header .navbar-right > ul {
+    gap: 8px !important;
+    height: 56px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  html body .header .navbar-right > ul > li,
+  html.dark body .header .navbar-right > ul > li {
+    height: 56px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+
+  /* Theme Switcher as 36px icon circle on mobile */
+  .clp-nav-theme-switcher,
+  html body .header .navbar-right > ul > li.clp-nav-theme-switcher,
+  html.dark body .header .navbar-right > ul > li.clp-nav-theme-switcher {
     display: flex !important;
   }
 
-  .clp-quick-dock {
+  .clp-nav-theme-switcher .clp-theme-nav-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+    border: 1px solid var(--clp-border-default) !important;
+    background: var(--clp-bg-surface-elevated) !important;
+  }
+
+  .clp-theme-nav-label,
+  .clp-theme-chevron {
     display: none !important;
   }
 
-  .header {
-    height: 58px !important;
-    padding: 0 12px !important;
+  .clp-theme-dropdown-menu {
+    top: 52px !important;
+    right: 4px !important;
+    left: auto !important;
+    width: min(290px, calc(100vw - 20px)) !important;
+    max-width: calc(100vw - 20px) !important;
   }
 
-  .sidebar {
-    display: none !important;
+  /* Admin area as 36px icon circle on mobile */
+  .header .navbar-right .admin-area a {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+    font-size: 0 !important;
+    border: 1px solid var(--clp-border-default) !important;
+    background: var(--clp-bg-surface-elevated) !important;
   }
 
-  .main-container {
+  .header .navbar-right .admin-area a svg {
+    margin: 0 !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .header .navbar-right .user-avatar img {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+  }
+
+  /* 2. Admin Sidebar: Swipeable Horizontal Chip Bar */
+  .sidebar,
+  #sidebar,
+  html body .sidebar,
+  html.dark body .sidebar {
     display: block !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: static !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: 1px solid var(--clp-border-subtle) !important;
+    background: var(--clp-bg-surface) !important;
+    box-shadow: none !important;
+    gap: 0 !important;
   }
 
-  .main-content {
-    padding: 16px 14px 40px 14px !important;
+  .sidebar .back-to-sites,
+  html body .sidebar .back-to-sites,
+  html.dark body .sidebar .back-to-sites {
+    display: none !important;
   }
 
-  .information-box-container {
-    grid-template-columns: 1fr !important;
+  .sidebar ul,
+  html body .sidebar ul,
+  html.dark body .sidebar ul {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    gap: 6px !important;
+    padding: 2px 0 !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: 0 !important;
+    border: none !important;
   }
 
+  .sidebar ul::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .sidebar ul li,
+  html body .sidebar ul li,
+  html.dark body .sidebar ul li {
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+  }
+
+  .sidebar ul li a,
+  html body .sidebar ul li a,
+  html.dark body .sidebar ul li a {
+    padding: 6px 14px !important;
+    font-size: 12.5px !important;
+    border-radius: 9999px !important;
+    white-space: nowrap !important;
+    height: 34px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  /* 3. Main Content Viewport */
+  .main-container,
+  html body .main-container,
+  html.dark body .main-container {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+
+  .main-container .container-limited-width,
+  html body .main-container .container-limited-width,
+  html.dark body .main-container .container-limited-width {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .main-content,
+  html body .main-content,
+  html.dark body .main-content {
+    padding: 14px 12px calc(80px + env(safe-area-inset-bottom, 0px)) 12px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3b. Responsive Bootstrap Grids for Mobile: Full Width Form Columns */
+  .row {
+    margin-left: -6px !important;
+    margin-right: -6px !important;
+  }
+
+  .row > [class*="col-"] {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* 4. Site Navigation Tabs: Smooth Touch Carousel */
+  .tab-container,
+  html body .tab-container,
+  html.dark body .tab-container {
+    padding: 4px !important;
+    margin-bottom: 14px !important;
+    border-radius: var(--clp-radius-lg) !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .tab-container ul,
+  html body .tab-container ul,
+  html.dark body .tab-container ul {
+    display: flex !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    gap: 6px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 2px 0 !important;
+    margin: 0 !important;
+  }
+
+  .tab-container ul::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .tab-container ul li,
+  html body .tab-container ul li,
+  html.dark body .tab-container ul li {
+    flex-shrink: 0 !important;
+  }
+
+  .tab-container ul li a,
+  html body .tab-container ul li a,
+  html.dark body .tab-container ul li a {
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    border-radius: var(--clp-radius-md) !important;
+    white-space: nowrap !important;
+    min-height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  /* 5. Site Info Overview Grid */
+  .site-info-container,
+  html body .site-info-container,
+  html.dark body .site-info-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+    margin: 8px 0 16px 0 !important;
+  }
+
+  .site-info-box h3 {
+    font-size: 10.5px !important;
+    margin-bottom: 3px !important;
+  }
+
+  .site-info-value {
+    font-size: 13.5px !important;
+  }
+
+  /* 6. Dashboard Cockpit Gauges */
+  .clp-vitals-cockpit {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .clp-gauge-card {
+    padding: 12px 6px !important;
+  }
+
+  .clp-gauge-canvas {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  .clp-gauge-value {
+    font-size: 13px !important;
+  }
+
+  .clp-gauge-label {
+    font-size: 10.5px !important;
+  }
+
+  .clp-health-ribbon {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
+    border-radius: var(--clp-radius-lg) !important;
+  }
+
+  .clp-pulse-indicator {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  .clp-health-actions {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .clp-quick-ssh-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .clp-dash-actions {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  /* 7. Sites Page Toolbar & Cards */
   .clp-sites-toolbar {
     flex-direction: column !important;
     align-items: stretch !important;
+    gap: 10px !important;
   }
 
   .clp-sites-search-box {
@@ -1034,6 +1395,13 @@ html[dir="rtl"] .clp-toast-container {
     overflow-x: auto !important;
     white-space: nowrap !important;
     flex-wrap: nowrap !important;
+    padding-bottom: 2px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .clp-filter-pills::-webkit-scrollbar {
+    display: none !important;
   }
 
   .clp-view-toggle {
@@ -1047,20 +1415,99 @@ html[dir="rtl"] .clp-toast-container {
   .clp-sites-card-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
 
-  .clp-health-ribbon {
+  /* 8. Tables Horizontal Scroll */
+  .card-table,
+  .table-responsive,
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+
+  .card-table::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 12px !important;
+    font-size: 12.5px !important;
+    white-space: nowrap !important;
+  }
+
+  /* 9. Page Headers & Action Buttons */
+  .page-header {
     flex-direction: column !important;
     align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
   }
 
-  .clp-health-actions {
-    width: 100%;
-    justify-content: space-between;
+  .page-header .page-title h1 {
+    font-size: 20px !important;
   }
 
-  .clp-quick-ssh-btn {
-    width: 100%;
-    justify-content: center;
+  .page-header .action-buttons,
+  .page-header .page-actions {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .card .card-body {
+    padding: 16px 14px !important;
+  }
+
+  .card .card-header {
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+  }
+
+  /* 10. Forms, Inputs & Modals */
+  .form-control,
+  .form-select,
+  .input-group-text,
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  select {
+    font-size: 16px !important;
+    height: 42px !important;
+  }
+
+  .btn,
+  button {
+    min-height: 40px !important;
+  }
+
+  .modal-dialog {
+    margin: 10px !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+
+  .modal-content {
+    border-radius: var(--clp-radius-lg) !important;
+  }
+
+  /* 11. Native Mobile Bottom Bar with Safe Area */
+  .clp-mobile-nav {
+    display: flex !important;
+    height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    z-index: 10000 !important;
+  }
+
+  /* Never show mobile nav on login page */
+  body.login-page .clp-mobile-nav,
+  .login-container ~ .clp-mobile-nav {
+    display: none !important;
+  }
+
+  .clp-quick-dock {
+    display: none !important;
   }
 }
