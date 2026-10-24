@@ -1501,10 +1501,14 @@ html[dir="rtl"] .clp-toast-container {
     z-index: 10000 !important;
   }
 
-  /* Never show mobile nav on login page */
+  /* Never show mobile nav on login page or when any modal is open */
   body.login-page .clp-mobile-nav,
+  body.modal-open .clp-mobile-nav,
+  .modal-open .clp-mobile-nav,
   .login-container ~ .clp-mobile-nav {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
   .clp-quick-dock {

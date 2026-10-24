@@ -217,6 +217,50 @@ html.dark body .btn-white {
   border: 1px solid var(--clp-border-default) !important;
 }
 
+/* Disabled & Inactive Button States Across All Themes */
+.btn:disabled,
+.btn[disabled],
+button:disabled,
+button[disabled],
+.btn-primary:disabled,
+.btn-blue:disabled,
+.btn-red:disabled,
+.btn-danger:disabled,
+.btn-gray:disabled,
+.btn-green:disabled,
+.btn.disabled,
+html.dark body .btn:disabled,
+html.dark body .btn[disabled],
+html.dark body button:disabled,
+html.dark body button[disabled],
+html.dark body .btn-blue:disabled,
+html.dark body .btn-primary:disabled,
+html.dark body .btn-red:disabled,
+html.dark body .btn.disabled {
+  background: var(--clp-bg-surface-elevated) !important;
+  color: var(--clp-text-disabled) !important;
+  border: 1px solid var(--clp-border-subtle) !important;
+  box-shadow: none !important;
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.8) !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+.btn:disabled:hover,
+.btn[disabled]:hover,
+button:disabled:hover,
+button[disabled]:hover,
+.btn.disabled:hover {
+  background: var(--clp-bg-surface-elevated) !important;
+  color: var(--clp-text-disabled) !important;
+  border-color: var(--clp-border-subtle) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: grayscale(0.8) !important;
+}
+
 .btn-gray:hover,
 .btn-white:hover,
 .btn-secondary:hover,
@@ -325,6 +369,14 @@ html.dark body .dropdown-menu .dropdown-item:hover {
   transform: translateX(2px);
 }
 
+.modal {
+  z-index: 10500 !important;
+}
+
+.modal-backdrop {
+  z-index: 10450 !important;
+}
+
 .modal-content {
   background: var(--clp-bg-surface) !important;
   border: 1px solid var(--clp-border-default) !important;
@@ -364,6 +416,16 @@ html.dark body .dropdown-menu .dropdown-item:hover {
   opacity: 0.75 !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Destructive Confirmation Submit Button (When Validated & Unlocked) */
+#delete-site-modal #site_delete_submit:not(:disabled),
+.modal #site_delete_submit:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.45) !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
 }
 
 /* ==========================================================================

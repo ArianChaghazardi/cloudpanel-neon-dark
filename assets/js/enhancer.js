@@ -164,9 +164,73 @@
     try { enhanceSitesPageUX(); } catch (e) { console.warn('enhanceSitesPageUX:', e); }
     try { enhanceDashboardUX(); } catch (e) { console.warn('enhanceDashboardUX:', e); }
     try { injectMobileBottomNavigation(); } catch (e) { console.warn('injectMobileBottomNavigation:', e); }
+    try { setupModalConfirmationEnhancers(); } catch (e) { console.warn('setupModalConfirmationEnhancers:', e); }
 
     // Start Real-Time Live Vitals Engine
     startLiveVitalsEngine();
+  }
+
+  // ==========================================================================
+  // Universal Confirmation Modal Enhancer (Delete Site, DB, Users, etc.)
+  // ==========================================================================
+  function setupModalConfirmationEnhancers() {
+    function handleConfirmInput(e) {
+      const input = e.target;
+      if (!input || !input.id) return;
+
+      // Handle delete site confirmation input (#site_delete_domainName)
+      if (input.id === 'site_delete_domainName' || input.hasAttribute('data-domain-name')) {
+        const requiredDomain = (input.getAttribute('data-domain-name') || input.placeholder || '').trim();
+        const currentVal = input.value.trim();
+        const submitBtn = document.querySelector('#site_delete_submit') || input.closest('form')?.querySelector('button[type="submit"]');
+
+        if (submitBtn) {
+          if (requiredDomain && currentVal.toLowerCase() === requiredDomain.toLowerCase()) {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.disabled = false;
+            if (window.jQuery) {
+              window.jQuery(submitBtn).removeAttr('disabled');
+            }
+          } else {
+            submitBtn.setAttribute('disabled', 'disabled');
+            submitBtn.disabled = true;
+            if (window.jQuery) {
+              window.jQuery(submitBtn).attr('disabled', 'disabled');
+            }
+          }
+        }
+      }
+
+      // Handle other delete inputs in CloudPanel modals
+      const dataAttr = Array.from(input.attributes).find(a => a.name.startsWith('data-') && (a.name.includes('name') || a.name.includes('domain')));
+      if (dataAttr && input.closest('.modal')) {
+        const requiredVal = dataAttr.value.trim();
+        const currentVal = input.value.trim();
+        const submitBtn = input.closest('form')?.querySelector('button[type="submit"]');
+        if (submitBtn && requiredVal) {
+          if (currentVal.toLowerCase() === requiredVal.toLowerCase()) {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.disabled = false;
+            if (window.jQuery) {
+              window.jQuery(submitBtn).removeAttr('disabled');
+            }
+          } else {
+            submitBtn.setAttribute('disabled', 'disabled');
+            submitBtn.disabled = true;
+            if (window.jQuery) {
+              window.jQuery(submitBtn).attr('disabled', 'disabled');
+            }
+          }
+        }
+      }
+    }
+
+    document.addEventListener('input', handleConfirmInput, true);
+    document.addEventListener('keyup', handleConfirmInput, true);
+    document.addEventListener('change', handleConfirmInput, true);
+    document.addEventListener('paste', (e) => {
+      setTimeout(() => handleConfirmInput(e), 50);
+    }, true);
   }
 
   // ==========================================================================
