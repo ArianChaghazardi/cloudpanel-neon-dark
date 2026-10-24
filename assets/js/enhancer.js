@@ -126,6 +126,7 @@
 
   // Robust Lifecycle Execution
   function initializeEngine() {
+    try { injectCustomBranding(); } catch (e) { console.warn('injectCustomBranding:', e); }
     try { injectHeaderBreadcrumb(); } catch (e) { console.warn('injectHeaderBreadcrumb:', e); }
     try { injectThemeSwitcher(); } catch (e) { console.warn('injectThemeSwitcher:', e); }
     try { setupHighchartsHook(); } catch (e) { console.warn('setupHighchartsHook:', e); }
@@ -136,6 +137,25 @@
 
     // Start Real-Time Live Vitals Engine
     startLiveVitalsEngine();
+  }
+
+  // ==========================================================================
+  // 0. Dynamic Brand Identity (HectorTM)
+  // ==========================================================================
+  function injectCustomBranding() {
+    const logoTargets = document.querySelectorAll('.header .logo a, .logo a, .login-container .logo a');
+    logoTargets.forEach(logoA => {
+      if (logoA.querySelector('.clp-brand-logo')) return;
+
+      const img = logoA.querySelector('img#logo, img');
+      if (img) img.style.display = 'none';
+
+      const brand = document.createElement('span');
+      brand.className = 'clp-brand-logo';
+      brand.title = 'HectorTM';
+      brand.innerHTML = `Hector<span class="clp-brand-tm">TM</span>`;
+      logoA.appendChild(brand);
+    });
   }
 
   if (document.readyState === 'loading') {

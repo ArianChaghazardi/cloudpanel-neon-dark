@@ -17,29 +17,86 @@ html.dark body .header {
   padding: 0 20px;
 }
 
-/* Header Logo */
+/* Header Logo & Dynamic HectorTM Branding */
 .header .logo,
 html.dark body .header .logo {
   border-right: 1px solid var(--clp-border-subtle) !important;
-  display: flex;
-  align-items: center;
-  padding: 0 20px 0 4px;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 20px 0 4px !important;
   transition: opacity var(--clp-transition-fast);
 }
 
 html[dir="rtl"] .header .logo {
   border-right: none !important;
   border-left: 1px solid var(--clp-border-subtle) !important;
-  padding: 0 4px 0 20px;
+  padding: 0 4px 0 20px !important;
 }
 
-.header .logo img {
-  filter: drop-shadow(0 0 12px var(--clp-accent-glow));
-  transition: transform var(--clp-transition-fast);
+.header .logo a,
+.login-container .logo a {
+  display: inline-flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  line-height: 1 !important;
 }
 
-.header .logo:hover img {
+.header .logo img#logo,
+.header .logo img,
+.login-container .logo img {
+  display: none !important;
+}
+
+/* HectorTM Dynamic Brand Mark */
+.clp-brand-logo {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 21px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  user-select: none !important;
+  background: var(--clp-accent-gradient) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 0 12px var(--clp-accent-glow)) !important;
+  transition: all var(--clp-transition-fast) !important;
+  cursor: pointer !important;
+}
+
+.login-container .clp-brand-logo {
+  font-size: 34px !important;
+  margin-bottom: 8px;
+}
+
+.clp-brand-logo:hover {
+  filter: drop-shadow(0 0 18px var(--clp-accent-glow)) brightness(1.15) !important;
   transform: scale(1.03);
+}
+
+.clp-brand-logo .clp-brand-tm {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  margin-left: 5px !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+  background: var(--clp-accent-gradient) !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px var(--clp-accent-glow) !important;
+  display: inline-block !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+  text-transform: uppercase;
+}
+
+html[dir="rtl"] .clp-brand-logo .clp-brand-tm {
+  margin-left: 0 !important;
+  margin-right: 5px !important;
 }
 
 /* Navigation Links */
