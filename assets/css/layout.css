@@ -27,7 +27,8 @@ html.dark body .header .logo {
   transition: opacity var(--clp-transition-fast);
 }
 
-html[dir="rtl"] .header .logo {
+html[dir="rtl"] .header .logo,
+.rtl .header .logo {
   border-right: none !important;
   border-left: 1px solid var(--clp-border-subtle) !important;
   padding: 0 4px 0 20px !important;
@@ -94,7 +95,8 @@ html[dir="rtl"] .header .logo {
   text-transform: uppercase;
 }
 
-html[dir="rtl"] .clp-brand-logo .clp-brand-tm {
+html[dir="rtl"] .clp-brand-logo .clp-brand-tm,
+.rtl .clp-brand-logo .clp-brand-tm {
   margin-left: 0 !important;
   margin-right: 5px !important;
 }
@@ -107,7 +109,8 @@ html[dir="rtl"] .clp-brand-logo .clp-brand-tm {
   padding-left: 16px;
 }
 
-html[dir="rtl"] .header .nav-link-container {
+html[dir="rtl"] .header .nav-link-container,
+.rtl .header .nav-link-container {
   padding-left: 0;
   padding-right: 16px;
 }
@@ -227,7 +230,8 @@ html.dark body .header .navbar-right > ul > li {
   line-height: normal !important;
 }
 
-html[dir="rtl"] .header .navbar-right > ul > li {
+html[dir="rtl"] .header .navbar-right > ul > li,
+.rtl .header .navbar-right > ul > li {
   border: none !important;
 }
 
@@ -525,7 +529,8 @@ html.dark body .sidebar {
   transition: all var(--clp-transition-normal);
 }
 
-html[dir="rtl"] .sidebar {
+html[dir="rtl"] .sidebar,
+.rtl .sidebar {
   margin: 16px 16px 16px 0 !important;
 }
 
@@ -553,7 +558,8 @@ html.dark body .back-to-sites {
   transform: translateX(-2px);
 }
 
-html[dir="rtl"] .back-to-sites a:hover {
+html[dir="rtl"] .back-to-sites a:hover,
+.rtl .back-to-sites a:hover {
   transform: translateX(2px);
 }
 
@@ -589,7 +595,8 @@ html.dark body .sidebar ul li a:hover {
   transform: translateX(4px);
 }
 
-html[dir="rtl"] .sidebar ul li a:hover {
+html[dir="rtl"] .sidebar ul li a:hover,
+.rtl .sidebar ul li a:hover {
   transform: translateX(-4px);
 }
 
@@ -695,13 +702,34 @@ html.dark body .tab-container ul li.active a {
   box-shadow: 0 2px 10px var(--clp-accent-glow);
 }
 
+/* Technical identifiers: Always preserve LTR reading direction */
+.site-info-value,
+.code,
+code,
+pre,
+kbd,
+.domain-name,
+.ip-address,
+.table td.domain,
+.clp-stat-value,
+.clp-site-domain {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+}
+
 /* Footer - Completely removed across all viewports and devices */
 footer,
 footer.footer,
 .footer,
 .footer.fixed-bottom,
+.footer-container,
+.language-selector,
+.locale-selector,
+#localeSelector,
 html.dark body .footer,
-html.dark body footer {
+html.dark body footer,
+html.dark body .footer-container {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;

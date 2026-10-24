@@ -997,18 +997,21 @@ html[dir="rtl"] .clp-toast-container {
     padding-bottom: 0 !important;
   }
 
-  /* 1. Header Precision Fit (Clean 56px Bar, Zero Horizontal Overflow) */
+  /* 1. Header Precision Fit (Clean 56px Bar, Dropdowns Overflow Unclipped) */
   .header,
   html body .header,
   html.dark body .header {
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
-    padding: 0 12px !important;
+    padding: 0 14px !important;
     justify-content: space-between !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     display: flex !important;
     align-items: center !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
   }
 
   .header .logo,
@@ -1076,7 +1079,7 @@ html[dir="rtl"] .clp-toast-container {
     gap: 8px !important;
     height: 56px !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 4px 0 0 !important;
     display: flex !important;
     align-items: center !important;
   }
@@ -1114,11 +1117,22 @@ html[dir="rtl"] .clp-toast-container {
   }
 
   .clp-theme-dropdown-menu {
-    top: 52px !important;
-    right: 4px !important;
+    position: fixed !important;
+    top: 56px !important;
+    right: 12px !important;
     left: auto !important;
-    width: min(290px, calc(100vw - 20px)) !important;
-    max-width: calc(100vw - 20px) !important;
+    width: min(300px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 72px) !important;
+    overflow-y: auto !important;
+    z-index: 999999 !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.75), 0 0 20px var(--clp-accent-glow) !important;
+  }
+
+  html[dir="rtl"] .clp-theme-dropdown-menu,
+  .rtl .clp-theme-dropdown-menu {
+    right: auto !important;
+    left: 12px !important;
   }
 
   /* Admin area as 36px icon circle on mobile */
@@ -1309,32 +1323,49 @@ html[dir="rtl"] .clp-toast-container {
     align-items: center !important;
   }
 
-  /* 5. Site Info Overview Grid */
+  /* 5. Site Info Overview Key-Value Stack */
   .site-info-container,
   html body .site-info-container,
   html.dark body .site-info-container {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
     padding: 12px 14px !important;
     margin: 8px 0 16px 0 !important;
   }
 
+  .site-info-box {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 8px 0 !important;
+    border-bottom: 1px solid var(--clp-border-subtle) !important;
+  }
+
+  .site-info-box:last-child {
+    border-bottom: none !important;
+  }
+
   .site-info-box h3 {
-    font-size: 10.5px !important;
-    margin-bottom: 3px !important;
+    font-size: 11px !important;
+    margin-bottom: 0 !important;
+    color: var(--clp-text-muted) !important;
   }
 
   .site-info-value {
-    font-size: 13.5px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
   }
 
   /* 6. Dashboard Cockpit Gauges */
-  .clp-vitals-cockpit {
+  .clp-vitals-cockpit,
+  .clp-radial-cockpit {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
   }
 
-  .clp-gauge-card {
+  .clp-gauge-card,
+  .clp-cockpit-card {
     padding: 12px 6px !important;
   }
 
@@ -1380,7 +1411,28 @@ html[dir="rtl"] .clp-toast-container {
     justify-content: space-between !important;
   }
 
-  /* 7. Sites Page Toolbar & Cards */
+  /* 7. Sites Page Toolbar, Summary Banner & Cards */
+  .clp-sites-summary-banner {
+    display: flex !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+    padding-bottom: 4px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .clp-sites-summary-banner::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .clp-summary-card {
+    flex: 0 0 78% !important;
+    max-width: 280px !important;
+    padding: 12px 14px !important;
+  }
+
   .clp-sites-toolbar {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -1420,22 +1472,57 @@ html[dir="rtl"] .clp-toast-container {
 
   /* 8. Tables Horizontal Scroll */
   .card-table,
+  .card-table .card-body,
+  .card-body-no-padding,
   .table-responsive,
   .table-container {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     scrollbar-width: none !important;
+    display: block !important;
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
-  .card-table::-webkit-scrollbar {
+  .card-table::-webkit-scrollbar,
+  .card-table .card-body::-webkit-scrollbar,
+  .card-body-no-padding::-webkit-scrollbar,
+  .table-responsive::-webkit-scrollbar,
+  .table-container::-webkit-scrollbar {
     display: none !important;
   }
 
+  .card-table table,
+  .card-body-no-padding table,
+  .table-responsive table,
+  .table-container table,
+  table.table {
+    width: max-content !important;
+    min-width: 580px !important;
+    table-layout: auto !important;
+  }
+
+  .card .card-body-no-padding .table td,
+  .card .card-body-no-padding .table th,
   .table th,
   .table td {
-    padding: 10px 12px !important;
+    padding: 12px 14px !important;
     font-size: 12.5px !important;
     white-space: nowrap !important;
+  }
+
+  .table-users td ul,
+  .card-table td ul {
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+  }
+
+  .table-users td ul li,
+  .card-table td ul li {
+    white-space: nowrap !important;
+    line-height: 1.5 !important;
+    font-size: 12px !important;
   }
 
   /* 9. Page Headers & Action Buttons */
@@ -1465,6 +1552,42 @@ html[dir="rtl"] .clp-toast-container {
   .card .card-header {
     padding: 12px 14px !important;
     font-size: 14px !important;
+  }
+
+  /* Form Actions: Full Width on Mobile (Fix right-align shoves) */
+  .card-body .text-end,
+  .card-footer .text-end,
+  .modal-footer .text-end {
+    text-align: inherit !important;
+  }
+
+  .card-body button[type="submit"],
+  .card-body .btn-primary,
+  .card-footer button[type="submit"],
+  .card-footer .btn-primary {
+    width: 100% !important;
+    display: block !important;
+    margin-top: 10px !important;
+  }
+
+  /* RTL / LTR Directional Consistency */
+  html[dir="rtl"] .page-header,
+  .rtl .page-header {
+    align-items: flex-end !important;
+  }
+
+  html[dir="rtl"] .page-header .action-buttons,
+  html[dir="rtl"] .page-header .page-actions,
+  .rtl .page-header .action-buttons,
+  .rtl .page-header .page-actions {
+    justify-content: flex-end !important;
+  }
+
+  html[dir="rtl"] .card-header,
+  .rtl .card-header,
+  html[dir="rtl"] .card-body,
+  .rtl .card-body {
+    text-align: right !important;
   }
 
   /* 10. Forms, Inputs & Modals */

@@ -237,7 +237,7 @@
   // Completely Eliminate Native CloudPanel Footer
   // ==========================================================================
   function removeFooter() {
-    document.querySelectorAll('footer, .footer, footer.fixed-bottom').forEach(f => f.remove());
+    document.querySelectorAll('footer, .footer, footer.fixed-bottom, .footer-container, .locale-selector, #localeSelector, .language-selector').forEach(f => f.remove());
   }
 
   // Observer to permanently prevent any footer from rendering
@@ -371,27 +371,35 @@
     const toggleBtn = li.querySelector('#clp-theme-toggle-btn');
     const menu = li.querySelector('#clp-theme-menu');
 
-    toggleBtn.addEventListener('click', (e) => {
+    const toggleThemeMenu = (e) => {
       e.stopPropagation();
+      e.preventDefault();
       menu.classList.toggle('open');
       li.classList.toggle('open');
-    });
+    };
+    toggleBtn.addEventListener('click', toggleThemeMenu);
+    toggleBtn.addEventListener('touchend', toggleThemeMenu);
 
-    document.addEventListener('click', (e) => {
+    const closeThemeMenu = (e) => {
       if (!li.contains(e.target)) {
         menu.classList.remove('open');
         li.classList.remove('open');
       }
-    });
+    };
+    document.addEventListener('click', closeThemeMenu);
+    document.addEventListener('touchend', closeThemeMenu);
 
     li.querySelectorAll('.clp-theme-option').forEach(el => {
-      el.addEventListener('click', function (e) {
+      const selectTheme = function (e) {
         e.stopPropagation();
+        e.preventDefault();
         const themeId = this.getAttribute('data-theme-id');
         applyTheme(themeId, true);
         menu.classList.remove('open');
         li.classList.remove('open');
-      });
+      };
+      el.addEventListener('click', selectTheme);
+      el.addEventListener('touchend', selectTheme);
     });
   }
 
