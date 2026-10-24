@@ -1,0 +1,542 @@
+/* ==========================================================================
+   CloudPanel Neon Dark - UX Revolution & Interactive Components
+   Brings modern developer-first UX: Command Palette, Live Filters, Card View,
+   Executive Health Ribbons, Floating Quick Dock & Toast Alerts.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Command Palette (Spotlight Search: Ctrl + K)
+   ========================================================================== */
+.clp-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--clp-transition-fast);
+}
+
+.clp-palette-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.clp-palette-modal {
+  background: var(--clp-bg-surface-elevated);
+  border: 1px solid var(--clp-border-hover);
+  border-radius: var(--clp-radius-xl);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--clp-shadow-glow);
+  width: 100%;
+  max-width: 620px;
+  overflow: hidden;
+  transform: scale(0.96) translateY(-10px);
+  transition: transform var(--clp-transition-fast);
+}
+
+.clp-palette-backdrop.open .clp-palette-modal {
+  transform: scale(1) translateY(0);
+}
+
+.clp-palette-input-wrap {
+  display: flex;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--clp-border-subtle);
+  gap: 14px;
+}
+
+.clp-palette-input-wrap svg {
+  color: var(--clp-accent);
+  flex-shrink: 0;
+}
+
+.clp-palette-input {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: var(--clp-text-heading) !important;
+  font-size: 16px;
+  width: 100%;
+  font-family: var(--clp-font-family);
+}
+
+.clp-palette-input::placeholder {
+  color: var(--clp-text-muted);
+}
+
+.clp-palette-kbd {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--clp-text-muted);
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-subtle);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--clp-font-mono);
+}
+
+.clp-palette-results {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.clp-palette-category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--clp-text-muted);
+  padding: 10px 14px 6px 14px;
+}
+
+.clp-palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--clp-radius-md);
+  color: var(--clp-text-body);
+  cursor: pointer;
+  transition: all var(--clp-transition-fast);
+  text-decoration: none !important;
+  margin-bottom: 2px;
+}
+
+.clp-palette-item:hover,
+.clp-palette-item.active {
+  background: var(--clp-bg-surface-hover);
+  color: var(--clp-accent-hover);
+  transform: translateX(4px);
+}
+
+.clp-palette-item .item-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.clp-palette-item .item-action {
+  font-size: 12px;
+  color: var(--clp-text-muted);
+}
+
+/* ==========================================================================
+   2. Sites Page Interactive Toolbar & Filter System
+   ========================================================================== */
+.clp-sites-toolbar {
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: var(--clp-shadow-sm);
+}
+
+.clp-sites-search-box {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+  max-width: 360px;
+}
+
+.clp-sites-search-box svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--clp-text-muted);
+  pointer-events: none;
+}
+
+html[dir="rtl"] .clp-sites-search-box svg {
+  left: auto;
+  right: 14px;
+}
+
+.clp-sites-search-input {
+  width: 100%;
+  padding: 8px 14px 8px 38px !important;
+  font-size: 13.5px !important;
+  border-radius: 9999px !important;
+}
+
+html[dir="rtl"] .clp-sites-search-input {
+  padding: 8px 38px 8px 14px !important;
+}
+
+.clp-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.clp-filter-pill {
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--clp-border-subtle);
+  background: var(--clp-bg-surface-elevated);
+  color: var(--clp-text-muted);
+  cursor: pointer;
+  transition: all var(--clp-transition-fast);
+  user-select: none;
+}
+
+.clp-filter-pill:hover {
+  color: var(--clp-text-heading);
+  border-color: var(--clp-border-hover);
+}
+
+.clp-filter-pill.active {
+  background: var(--clp-accent);
+  color: #ffffff;
+  border-color: var(--clp-accent);
+  box-shadow: 0 2px 10px var(--clp-accent-glow);
+  font-weight: 600;
+}
+
+.clp-view-toggle {
+  display: flex;
+  align-items: center;
+  background: var(--clp-bg-input);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+.clp-view-btn {
+  background: transparent;
+  border: none;
+  color: var(--clp-text-muted);
+  padding: 6px 10px;
+  border-radius: var(--clp-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all var(--clp-transition-fast);
+}
+
+.clp-view-btn.active,
+.clp-view-btn:hover {
+  background: var(--clp-bg-surface-elevated);
+  color: var(--clp-accent-hover);
+}
+
+/* ==========================================================================
+   3. Sites Card Grid (Modern View Option)
+   ========================================================================== */
+.clp-sites-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.clp-site-card {
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-lg);
+  padding: 20px;
+  box-shadow: var(--clp-shadow-sm);
+  transition: all var(--clp-transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.clp-site-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--clp-accent-gradient);
+  opacity: 0;
+  transition: opacity var(--clp-transition-fast);
+}
+
+.clp-site-card:hover {
+  border-color: var(--clp-border-hover);
+  box-shadow: var(--clp-shadow-glow), var(--clp-shadow-md);
+  transform: translateY(-3px);
+}
+
+.clp-site-card:hover::before {
+  opacity: 1;
+}
+
+.clp-site-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.clp-site-card-domain {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--clp-text-heading);
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clp-site-card-domain:hover {
+  color: var(--clp-accent-hover);
+}
+
+.clp-site-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.clp-site-meta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--clp-text-muted);
+}
+
+.clp-site-meta-item strong {
+  color: var(--clp-text-body);
+}
+
+.clp-site-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--clp-border-subtle);
+}
+
+.clp-site-card-actions .btn {
+  flex: 1;
+}
+
+/* ==========================================================================
+   4. Executive Server Health Hero Ribbon (Dashboard)
+   ========================================================================== */
+.clp-health-ribbon {
+  background: var(--clp-accent-gradient-soft);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-lg);
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.clp-health-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clp-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--clp-success);
+  box-shadow: 0 0 10px var(--clp-success);
+  position: relative;
+}
+
+.clp-status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--clp-success);
+  animation: clp-pulse 2s infinite ease-out;
+}
+
+@keyframes clp-pulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.clp-health-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clp-quick-ssh-btn {
+  background: var(--clp-bg-surface-elevated);
+  border: 1px solid var(--clp-border-default);
+  color: var(--clp-accent-hover);
+  font-size: 12px;
+  font-family: var(--clp-font-mono);
+  padding: 6px 12px;
+  border-radius: var(--clp-radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--clp-transition-fast);
+}
+
+.clp-quick-ssh-btn:hover {
+  background: var(--clp-bg-surface-hover);
+  border-color: var(--clp-border-hover);
+  color: #ffffff;
+  box-shadow: var(--clp-shadow-sm);
+}
+
+/* ==========================================================================
+   5. Chart Layout Controls & Dynamic Statistics Badges
+   ========================================================================== */
+.clp-chart-stat-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clp-stat-pill {
+  font-size: 11px;
+  font-family: var(--clp-font-mono);
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-subtle);
+  color: var(--clp-text-muted);
+}
+
+.clp-stat-pill strong {
+  color: var(--clp-accent-hover);
+}
+
+/* Layout Mode: Focus Mode (Full Width Stacking) */
+.chart-container.focus-mode {
+  grid-template-columns: 1fr !important;
+}
+
+/* ==========================================================================
+   6. Floating Quick Dock (Bottom Center)
+   ========================================================================== */
+.clp-floating-dock {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: var(--clp-bg-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--clp-border-hover);
+  border-radius: 9999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), var(--clp-shadow-glow);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 9998;
+  transition: all var(--clp-transition-normal);
+}
+
+.clp-dock-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--clp-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all var(--clp-transition-fast);
+  cursor: pointer;
+  text-decoration: none !important;
+  position: relative;
+}
+
+.clp-dock-item:hover {
+  color: var(--clp-text-heading);
+  background: var(--clp-bg-surface-elevated);
+  border-color: var(--clp-border-default);
+  box-shadow: 0 0 12px var(--clp-accent-glow);
+  transform: translateY(-2px);
+}
+
+.clp-dock-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--clp-border-subtle);
+  margin: 0 2px;
+}
+
+/* ==========================================================================
+   7. Toast Notification System
+   ========================================================================== */
+.clp-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+html[dir="rtl"] .clp-toast-container {
+  right: auto;
+  left: 24px;
+}
+
+.clp-toast {
+  pointer-events: auto;
+  background: var(--clp-bg-surface-elevated);
+  border: 1px solid var(--clp-border-hover);
+  border-radius: var(--clp-radius-md);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), var(--clp-shadow-glow);
+  padding: 12px 18px;
+  font-size: 13.5px;
+  color: var(--clp-text-heading);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: clp-toast-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes clp-toast-in {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.clp-toast.out {
+  animation: clp-toast-out 0.25s forwards ease-in;
+}
+
+@keyframes clp-toast-out {
+  to { transform: translateY(20px); opacity: 0; }
+}

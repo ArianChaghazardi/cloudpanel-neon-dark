@@ -14,7 +14,7 @@
   <!-- Highcharts for Monitoring Charts -->
   <script src="https://code.highcharts.com/highcharts.js"></script>
 
-  <!-- CloudPanel Custom Theme Enhancer & Chart Modernizer -->
+  <!-- CloudPanel Custom Theme Enhancer & UX Revolution Engine -->
   <script defer src="../assets/js/enhancer.js"></script>
 </head>
 <body>
@@ -24,7 +24,7 @@
     <div class="logo">
       <a href="#" style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; color: #fff;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-        <span>CloudPanel <span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4);">NEON</span></span>
+        <span>CloudPanel <span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4);">UX PRO</span></span>
       </a>
     </div>
 
@@ -68,10 +68,10 @@
     <section class="main-content">
       <div class="page-header d-flex justify-content-between align-items-center">
         <div class="page-title">
-          <h1>Server Dashboard</h1>
+          <h1>Server Dashboard & Sites</h1>
         </div>
         <div>
-          <button class="btn btn-primary">➕ Add New Site</button>
+          <button class="btn btn-primary">+ Add Site</button>
         </div>
       </div>
 
@@ -90,7 +90,7 @@
               </div>
               <div class="information-box">
                 <h4>IPv4 Public IP</h4>
-                <a class="click-to-copy" href="javascript:void(0);">185.143.232.10</a>
+                <a class="click-to-copy" href="javascript:void(0);">193.151.158.218</a>
               </div>
               <div class="information-box">
                 <h4>Server Resources</h4>
@@ -117,7 +117,6 @@
                 <div class="chart">
                   <div class="chart-header">
                     <h3>CPU Usage</h3>
-                    <span class="badge badge-info">Avg: 24.5%</span>
                   </div>
                   <div class="chart-content">
                     <div id="cpuChart" style="height: 250px;"></div>
@@ -127,7 +126,6 @@
                 <div class="chart">
                   <div class="chart-header">
                     <h3>Memory Usage</h3>
-                    <span class="badge badge-info">Avg: 48.2%</span>
                   </div>
                   <div class="chart-content">
                     <div id="memoryChart" style="height: 250px;"></div>
@@ -137,7 +135,6 @@
                 <div class="chart">
                   <div class="chart-header">
                     <h3>Disk I/O Usage</h3>
-                    <span class="badge badge-success">Healthy</span>
                   </div>
                   <div class="chart-content">
                     <div id="diskUsageChart" style="height: 250px;"></div>
@@ -147,7 +144,6 @@
                 <div class="chart">
                   <div class="chart-header">
                     <h3>Load Average</h3>
-                    <span class="badge badge-info">1.25 / 1.10</span>
                   </div>
                   <div class="chart-content">
                     <div id="loadAverageChart" style="height: 250px;"></div>
@@ -158,48 +154,52 @@
           </div>
         </div>
 
-        <!-- Sample Sites Table -->
-        <div class="card mt-4">
+        <!-- Sites Section (Enhanced with Live Search, Filter Pills & Card/Table Toggle) -->
+        <div class="card card-table mt-4">
           <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Hosted Sites</span>
-            <span class="badge badge-info">3 Active Domains</span>
+            <span>Hosted Sites & Applications</span>
+            <span class="badge badge-info">5 Active Sites</span>
           </div>
           <div class="card-body p-0">
-            <table class="table mb-0">
+            <table class="table table-sites mb-0">
               <thead>
                 <tr>
                   <th>Domain</th>
-                  <th>Type</th>
-                  <th>PHP / Runtime</th>
-                  <th>SSL Status</th>
-                  <th>Status</th>
-                  <th>Action</th>
+                  <th>Site User</th>
+                  <th>App</th>
+                  <th class="text-end">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>api.hectortm.ir</strong></td>
-                  <td>Node.js 20</td>
-                  <td>Node.js / Reverse Proxy</td>
-                  <td><span class="badge badge-success">🔒 Let's Encrypt</span></td>
-                  <td><span class="badge badge-success">Active</span></td>
-                  <td><button class="btn btn-sm btn-white">Manage</button></td>
+                  <td><a href="#manage">api.hectortm.ir</a></td>
+                  <td>u_hectortm</td>
+                  <td>NODEJS</td>
+                  <td class="text-end"><a href="#manage">Manage</a></td>
                 </tr>
                 <tr>
-                  <td><strong>edge.dlio.ir</strong></td>
-                  <td>PHP / WordPress</td>
-                  <td>PHP 8.2-FPM</td>
-                  <td><span class="badge badge-success">🔒 Let's Encrypt</span></td>
-                  <td><span class="badge badge-success">Active</span></td>
-                  <td><button class="btn btn-sm btn-white">Manage</button></td>
+                  <td><a href="#manage">edge.dlio.ir</a></td>
+                  <td>u_dlio</td>
+                  <td>PHP</td>
+                  <td class="text-end"><a href="#manage">Manage</a></td>
                 </tr>
                 <tr>
-                  <td><strong>filn.space</strong></td>
-                  <td>Python / FastAPI</td>
-                  <td>Python 3.11</td>
-                  <td><span class="badge badge-success">🔒 Let's Encrypt</span></td>
-                  <td><span class="badge badge-success">Active</span></td>
-                  <td><button class="btn btn-sm btn-white">Manage</button></td>
+                  <td><a href="#manage">filn.space</a></td>
+                  <td>u_filn</td>
+                  <td>PYTHON</td>
+                  <td class="text-end"><a href="#manage">Manage</a></td>
+                </tr>
+                <tr>
+                  <td><a href="#manage">elitecr.hectortm.ir</a></td>
+                  <td>u_elitecr</td>
+                  <td>REVERSE_PROXY</td>
+                  <td class="text-end"><a href="#manage">Manage</a></td>
+                </tr>
+                <tr>
+                  <td><a href="#manage">docs.sourcio.ir</a></td>
+                  <td>u_docs</td>
+                  <td>STATIC</td>
+                  <td class="text-end"><a href="#manage">Manage</a></td>
                 </tr>
               </tbody>
             </table>
@@ -211,10 +211,9 @@
 
   <footer class="footer d-flex justify-content-between align-items-center">
     <div>CloudPanel Neon Dark Edition &bull; High Performance Server UI</div>
-    <div>Seamless Upgrades &bull; Method 1 Nginx Injection</div>
+    <div>Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl + K</kbd> for Command Palette</div>
   </footer>
 
-  <!-- Mock Chart Initializer to simulate CloudPanel's default chart rendering -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const times = ['18:00', '18:10', '18:20', '18:30', '18:40', '18:50', '19:00', '19:10', '19:20', '19:30'];

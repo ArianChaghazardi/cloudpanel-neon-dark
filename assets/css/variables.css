@@ -1,6 +1,7 @@
 /* ==========================================================================
    CloudPanel Neon Dark - Design Tokens & Theme Palettes
    Engineered for modern, high-contrast, minimalist dark aesthetics
+   7 Curated Visual Palettes: Blue, Cyan, AMOLED, Emerald, Violet, Amber, Crimson
    ========================================================================== */
 
 :root {
@@ -18,7 +19,6 @@
 
 /* ==========================================================================
    Theme 1: Neon Midnight Blue (Default)
-   Ultra-deep dark slate/black with electric sapphire & azure neon glow
    ========================================================================== */
 :root,
 html[data-clp-theme="neon-blue"],
@@ -27,12 +27,12 @@ html.dark[data-clp-theme="neon-blue"] {
   --clp-bg-surface: #0c1017;
   --clp-bg-surface-elevated: #111722;
   --clp-bg-surface-hover: #172030;
-  --clp-bg-glass: rgba(12, 16, 23, 0.75);
+  --clp-bg-glass: rgba(12, 16, 23, 0.82);
   --clp-bg-input: #0f141d;
   
   --clp-border-subtle: rgba(255, 255, 255, 0.06);
-  --clp-border-default: rgba(59, 130, 246, 0.14);
-  --clp-border-hover: rgba(59, 130, 246, 0.38);
+  --clp-border-default: rgba(59, 130, 246, 0.16);
+  --clp-border-hover: rgba(59, 130, 246, 0.42);
   --clp-border-focus: #3b82f6;
 
   --clp-accent: #3b82f6;
@@ -62,7 +62,6 @@ html.dark[data-clp-theme="neon-blue"] {
 
 /* ==========================================================================
    Theme 2: Cyber Cyan (Deep Oceanic Cyberpunk)
-   Deep ink navy with sharp turquoise / cyan luminescence
    ========================================================================== */
 html[data-clp-theme="cyber-cyan"],
 html.dark[data-clp-theme="cyber-cyan"] {
@@ -70,12 +69,12 @@ html.dark[data-clp-theme="cyber-cyan"] {
   --clp-bg-surface: #0a1322;
   --clp-bg-surface-elevated: #0f1c30;
   --clp-bg-surface-hover: #152742;
-  --clp-bg-glass: rgba(10, 19, 34, 0.75);
+  --clp-bg-glass: rgba(10, 19, 34, 0.82);
   --clp-bg-input: #0c1626;
 
   --clp-border-subtle: rgba(255, 255, 255, 0.05);
-  --clp-border-default: rgba(6, 182, 212, 0.16);
-  --clp-border-hover: rgba(6, 182, 212, 0.42);
+  --clp-border-default: rgba(6, 182, 212, 0.18);
+  --clp-border-hover: rgba(6, 182, 212, 0.45);
   --clp-border-focus: #06b6d4;
 
   --clp-accent: #06b6d4;
@@ -95,8 +94,7 @@ html.dark[data-clp-theme="cyber-cyan"] {
 }
 
 /* ==========================================================================
-   Theme 3: AMOLED Pure Black
-   Pitch true black for OLED displays & maximum crisp contrast
+   Theme 3: AMOLED Pure Black (True Black OLED)
    ========================================================================== */
 html[data-clp-theme="amoled-pure"],
 html.dark[data-clp-theme="amoled-pure"] {
@@ -104,7 +102,7 @@ html.dark[data-clp-theme="amoled-pure"] {
   --clp-bg-surface: #08080a;
   --clp-bg-surface-elevated: #101014;
   --clp-bg-surface-hover: #181820;
-  --clp-bg-glass: rgba(8, 8, 10, 0.85);
+  --clp-bg-glass: rgba(8, 8, 10, 0.90);
   --clp-bg-input: #0a0a0d;
 
   --clp-border-subtle: rgba(255, 255, 255, 0.08);
@@ -126,4 +124,136 @@ html.dark[data-clp-theme="amoled-pure"] {
 
   --clp-shadow-md: 0 8px 30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
   --clp-shadow-glow: 0 0 30px -4px rgba(59, 130, 246, 0.3);
+}
+
+/* ==========================================================================
+   Theme 4: Emerald Matrix (Cyberpunk Hacker Green)
+   ========================================================================== */
+html[data-clp-theme="matrix-green"],
+html.dark[data-clp-theme="matrix-green"] {
+  --clp-bg-canvas: #050a07;
+  --clp-bg-surface: #0a140e;
+  --clp-bg-surface-elevated: #0f1e16;
+  --clp-bg-surface-hover: #15291e;
+  --clp-bg-glass: rgba(10, 20, 14, 0.82);
+  --clp-bg-input: #0b1710;
+
+  --clp-border-subtle: rgba(255, 255, 255, 0.05);
+  --clp-border-default: rgba(16, 185, 129, 0.18);
+  --clp-border-hover: rgba(16, 185, 129, 0.45);
+  --clp-border-focus: #10b981;
+
+  --clp-accent: #10b981;
+  --clp-accent-hover: #34d399;
+  --clp-accent-active: #059669;
+  --clp-accent-glow: rgba(16, 185, 129, 0.32);
+  --clp-accent-gradient: linear-gradient(135deg, #059669 0%, #10b981 50%, #6ee7b7 100%);
+  --clp-accent-gradient-soft: linear-gradient(180deg, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0.01) 100%);
+
+  --clp-text-heading: #f0fdf4;
+  --clp-text-body: #dcfce7;
+  --clp-text-muted: #7ca38b;
+  --clp-text-disabled: #3d5646;
+
+  --clp-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(16, 185, 129, 0.12);
+  --clp-shadow-glow: 0 0 25px -3px rgba(16, 185, 129, 0.28);
+}
+
+/* ==========================================================================
+   Theme 5: Violet Royale (Linear / Synthwave Purple)
+   ========================================================================== */
+html[data-clp-theme="violet-synth"],
+html.dark[data-clp-theme="violet-synth"] {
+  --clp-bg-canvas: #090611;
+  --clp-bg-surface: #100b1d;
+  --clp-bg-surface-elevated: #171128;
+  --clp-bg-surface-hover: #211938;
+  --clp-bg-glass: rgba(16, 11, 29, 0.82);
+  --clp-bg-input: #120c22;
+
+  --clp-border-subtle: rgba(255, 255, 255, 0.05);
+  --clp-border-default: rgba(168, 85, 247, 0.18);
+  --clp-border-hover: rgba(168, 85, 247, 0.45);
+  --clp-border-focus: #a855f7;
+
+  --clp-accent: #a855f7;
+  --clp-accent-hover: #c084fc;
+  --clp-accent-active: #9333ea;
+  --clp-accent-glow: rgba(168, 85, 247, 0.32);
+  --clp-accent-gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #f472b6 100%);
+  --clp-accent-gradient-soft: linear-gradient(180deg, rgba(168, 85, 247, 0.18) 0%, rgba(168, 85, 247, 0.01) 100%);
+
+  --clp-text-heading: #faf5ff;
+  --clp-text-body: #f3e8ff;
+  --clp-text-muted: #9f8bb8;
+  --clp-text-disabled: #55446a;
+
+  --clp-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(168, 85, 247, 0.12);
+  --clp-shadow-glow: 0 0 25px -3px rgba(168, 85, 247, 0.28);
+}
+
+/* ==========================================================================
+   Theme 6: Sunset Amber (Solar Flare Warm Dark)
+   ========================================================================== */
+html[data-clp-theme="sunset-amber"],
+html.dark[data-clp-theme="sunset-amber"] {
+  --clp-bg-canvas: #0d0a06;
+  --clp-bg-surface: #17110a;
+  --clp-bg-surface-elevated: #221a10;
+  --clp-bg-surface-hover: #2f2416;
+  --clp-bg-glass: rgba(23, 17, 10, 0.82);
+  --clp-bg-input: #1a130b;
+
+  --clp-border-subtle: rgba(255, 255, 255, 0.05);
+  --clp-border-default: rgba(245, 158, 11, 0.18);
+  --clp-border-hover: rgba(245, 158, 11, 0.45);
+  --clp-border-focus: #f59e0b;
+
+  --clp-accent: #f59e0b;
+  --clp-accent-hover: #fbbf24;
+  --clp-accent-active: #d97706;
+  --clp-accent-glow: rgba(245, 158, 11, 0.32);
+  --clp-accent-gradient: linear-gradient(135deg, #ea580c 0%, #f59e0b 50%, #fde047 100%);
+  --clp-accent-gradient-soft: linear-gradient(180deg, rgba(245, 158, 11, 0.18) 0%, rgba(245, 158, 11, 0.01) 100%);
+
+  --clp-text-heading: #fffbeb;
+  --clp-text-body: #fef3c7;
+  --clp-text-muted: #b59f80;
+  --clp-text-disabled: #5e4f3c;
+
+  --clp-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(245, 158, 11, 0.12);
+  --clp-shadow-glow: 0 0 25px -3px rgba(245, 158, 11, 0.28);
+}
+
+/* ==========================================================================
+   Theme 7: Crimson Phantom (Hacker Stealth Red)
+   ========================================================================== */
+html[data-clp-theme="crimson-red"],
+html.dark[data-clp-theme="crimson-red"] {
+  --clp-bg-canvas: #0c0607;
+  --clp-bg-surface: #150a0c;
+  --clp-bg-surface-elevated: #200f13;
+  --clp-bg-surface-hover: #2d161b;
+  --clp-bg-glass: rgba(21, 10, 12, 0.82);
+  --clp-bg-input: #180c0f;
+
+  --clp-border-subtle: rgba(255, 255, 255, 0.05);
+  --clp-border-default: rgba(239, 68, 68, 0.18);
+  --clp-border-hover: rgba(239, 68, 68, 0.45);
+  --clp-border-focus: #ef4444;
+
+  --clp-accent: #ef4444;
+  --clp-accent-hover: #f87171;
+  --clp-accent-active: #dc2626;
+  --clp-accent-glow: rgba(239, 68, 68, 0.32);
+  --clp-accent-gradient: linear-gradient(135deg, #be123c 0%, #ef4444 50%, #fb7185 100%);
+  --clp-accent-gradient-soft: linear-gradient(180deg, rgba(239, 68, 68, 0.18) 0%, rgba(239, 68, 68, 0.01) 100%);
+
+  --clp-text-heading: #fff1f2;
+  --clp-text-body: #ffe4e6;
+  --clp-text-muted: #ab868b;
+  --clp-text-disabled: #5a3c41;
+
+  --clp-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(239, 68, 68, 0.12);
+  --clp-shadow-glow: 0 0 25px -3px rgba(239, 68, 68, 0.28);
 }

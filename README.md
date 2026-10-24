@@ -1,41 +1,47 @@
-# 🌌 CloudPanel Neon Dark Edition
+# 🌌 CloudPanel Neon Dark & UX Revolution Edition
 
-> **A professional, minimalist, high-contrast Dark UI redesign for [CloudPanel](https://www.cloudpanel.io) with multi-theme support and monitoring chart overhauls.**  
-> *100% Update-Proof & Non-Destructive (Method 1: Nginx Sub_Filter Injection).*
+> **A professional, high-contrast Dark UI redesign & fundamental UX modernization for [CloudPanel](https://www.cloudpanel.io).**  
+> *Features 7 Designer Themes, Command Palette (Ctrl+K), Live Search/Filtering, Card/Table View Toggle, Monitoring Overhaul, and 100% Update-Proof Architecture.*
 
 ---
 
-## 💎 ویژگی‌های کلیدی (Key Features)
+## 💎 ویژگی‌های بازطراحی بنیادی UX و UI
 
-* **طراحی مدرن، مینیمال و دارک حرفه‌ای (Modern UI/UX):**
-  * ترکیب مشکی عمیق (`#07090e`) و خاکستری متالیک مات با رنگ اختصاصی **آبی نئونی الکتریک (`#3b82f6` / `#60a5fa`)**.
-  * الهام‌گرفته از استانداردهای طراحی مدرن داشبوردهای Vercel، Linear و Datadog.
-  * پنل‌ها و نوبار شیشه‌ای (Glassmorphism با `backdrop-filter: blur(16px)`).
-  * حاشیه‌های ظریف، میکرواینتراکشن‌های روان و حلقه‌های فوکوس درخشان برای فیلدها و دکمه‌ها.
-  * پشتیبانی کامل از هر دو حالت چپ‌چین (LTR) و راست‌چین/فارسی (RTL).
+### ۱. انقلاب در تجربه کاربری (Fundamental UX Overhaul):
+* ⚡ **پالت دستورات سریع (Spotlight Command Palette - `Ctrl + K` / `Cmd + K`):**
+  * جستجوی سریع و بدون ماوس در بین تمام بخش‌ها، دامنه‌ها، تنظیمات، لاگ‌ها و اکشن‌ها (مشابه Linear و Raycast).
+  * کلید میانبر `Ctrl+K` در هدر یا در داک شناور پایین صفحه در دسترس است.
+* 🌐 **تحول بخش مدیریت سایت‌ها (Sites UX Revolution):**
+  * **نوار ابزار و جستجوی آنی (Live Search & Filter Toolbar):** فیلتر فوری دامنه‌ها به محض تایپ کردن، بدون نیاز به رفرش صفحه.
+  * **فیلتر تگ‌ها (Type Pills):** دسته‌بندی سریع بر اساس PHP، Node.js، Python، Reverse Proxy و Static.
+  * **سوئیچ بین حالت جدولی (Table View) و حالت کارتی مدرن (Card Grid View):** امکان مشاهده دامنه‌ها به صورت کارت‌های شیک و مدرن همراه با آیکون‌های کپی سریع دامنه و مشاهده سایت در تب جدید.
+* 📊 **تحول بخش داشبورد و مانیتورینگ (Executive Monitoring & Health Bar):**
+  * **نوار وضعیت لحظه‌ای سرور (Live Health Ribbon):** نشانگر پالس سلامت، دکمه کپی دستور SSH با یک کلیک (`ssh root@ip`).
+  * **مدرن‌سازی چارت‌های Highcharts:** تبدیل خودکار خطوط ساده به **منحنی‌های نرم گرادینت‌دار (Smooth AreaSpline)** به همراه تولتیپ‌های بلورین شیشه‌ای.
+  * **آمارهای محاسباتی آنی چارت‌ها:** نمایش میانگین (`Avg`) و اوج مصرف (`Peak`) زیر عنوان هر نمودار.
+  * **سوئیچ چیدمان چارت‌ها:** امکان تغییر چیدمان نمودارها از حالت ۲x۲ به حالت فوکوس عرض‌کامل (Focus View).
+* 🚢 **داک شناور ابزارها (Floating Quick Dock):**
+  * دسترسی سریع در پایین صفحه به سرچ، داشبورد، لیست سایت‌ها، افزودن سایت جدید و تعویض سریع تم.
+* 🔔 **سیستم اعلان تست اختصاصی (Toast Notifications):**
+  * بازخورد فوری هنگام کپی IP، دامنه‌ها و تعویض تم.
 
-* **بازطراحی اساسی مانیتورینگ و داشبورد (Monitoring Overhaul):**
-  * تبدیل خودکار نمودارهای خطی و ساده Highcharts به **منحنی‌های نرم گرادینت‌دار (Smooth AreaSpline Gradients)**.
-  * تولتیپ‌های شیشه‌ای مدرن با سایه و فونت منو-اسپیس برای داده‌های آماری.
-  * بازطراحی باکس‌های اطلاعات سیستم (IP، CPU، سیستم‌عامل و رم) با نشانگر وضعیت آنلاین (Pulse Status Indicator).
+---
 
-* **پشتیبانی از چندین تم مختلف (Multi-Theme Engine):**
-  * تعبیه یک **Theme Switcher** اختصاصی در بالای نوبار بدون دستکاری کدهای پنل:
-    1. ⚡ **Neon Midnight Blue (پیش‌فرض):** مشکی عمیق با نور آبی نئونی و هایلایت‌های شفاف.
-    2. 🌊 **Cyber Cyan:** سرمه‌ای تیره با نور فیروزه‌ای و سایبرپانک.
-    3. 🌑 **AMOLED Pure:** مشکی ۱۰۰٪ مطلق برای کنتراست بی‌نهایت و مانیتورهای اولد.
-  * ذخیره‌سازی تم انتخابی در `localStorage` مرورگر.
-
-* **۱۰۰٪ مقاوم در برابر آپدیت‌های کلودپنل (100% Update-Proof):**
-  * بر اساس **روش اول (تزریق از لایه Nginx)**؛ فایل‌های اصلی PHP یا پکیج‌های کلودپنل دستکاری نمی‌شوند.
-  * با به‌روزرسانی پکیج رسمی کلودپنل (`apt upgrade` یا `clp-update`)، تغییرات به هیچ وجه پاک نمی‌شوند.
-  * دارای هوک اختصاصی در `APT Post-Invoke` برای حفظ خودکار پایداری تنظیمات در تمام آپدیت‌های آتی.
+### ۲. پالت‌های ۷ گانه رنگ و تم (7 Designer Color Themes):
+تعبیه یک **Theme Switcher** اختصاصی در نوبار برای تغییر زنده تم بدون رفرش:
+1. ⚡ **Neon Midnight Blue (پیش‌فرض):** مشکی عمیق (`#07090e`) با آبی نئونی الکتریک (`#3b82f6`).
+2. 🌊 **Cyber Cyan:** سرمه‌ای اقیانوسی (`#050b14`) با نور فیروزه‌ای لیزری.
+3. 🌑 **AMOLED Pure:** مشکی مطلق (`#000000`) برای بالاترین کنتراست نمایشگرهای OLED.
+4. 🟢 **Emerald Matrix:** تیره ابسیدین با سبز نئونی سایبری و هکری (`#10b981`).
+5. 🟣 **Violet Royale:** سرمه‌ای کهکشانی با بنفش سلطنتی سینت‌ویو (`#a855f7`).
+6. 🟠 **Sunset Amber:** تیره بازالتی گرم با نور کهربایی آتشین خورشیدی (`#f59e0b`).
+7. 🔴 **Crimson Phantom:** تیره تیتانیومی استیلث با قرمز نئونی شارپ (`#ef4444`).
 
 ---
 
 ## 🚀 نصب سریع با یک دستور (One-Click Installation)
 
-روی سروری که CloudPanel روی آن نصب است، دستور زیر را اجرا کنید:
+روی سروری که CloudPanel روی آن نصب است، دستور زیر را با کاربر root یا sudo اجرا کنید:
 
 ```bash
 git clone https://github.com/ArianChaghazardi/cloudpanel-neon-dark.git /tmp/cloudpanel-neon-dark \
@@ -53,16 +59,17 @@ git clone https://github.com/ArianChaghazardi/cloudpanel-neon-dark.git /tmp/clou
 cloudpanel-neon-dark/
 ├── assets/
 │   ├── css/
-│   │   ├── variables.css      # توکن‌های طراحی و پالت‌های رنگی ۳ تم مختلف
+│   │   ├── variables.css      # توکن‌های طراحی و پالت‌های ۷ تم اختصاصی
 │   │   ├── base.css           # بازنشانی استایل‌ها، اسکرول‌بار سفارشی و تایپوگرافی
 │   │   ├── layout.css         # استایل هدر شیشه‌ای، سایدبار و نویگیشن
 │   │   ├── components.css     # کارت‌ها، جداول، اینپوت‌ها، دکمه‌ها و بج‌ها
-│   │   ├── dashboard.css      # بازطراحی ویجت‌های مانیتورینگ و داشبورد
-│   │   └── theme.css          # استایل‌شیت اصلی برای بارگذاری مستقیم
+│   │   ├── dashboard.css      # استایل‌های چارت‌ها و باکس‌های اطلاعات سرور
+│   │   ├── ux-revolution.css  # کامپوننت‌های مدرن UX: پالت Ctrl+K، فیلتر سایت‌ها، داک شناور و نوتیفیکیشن‌ها
+│   │   └── theme.css          # استایل‌شیت تجمیعی برای بارگذاری مستقیم
 │   └── js/
-│       └── enhancer.js        # موتور سوییچ تم + هوک بازطراحی خودکار Highcharts
+│       └── enhancer.js        # موتور پالت دستورات، فیلتر سایت‌ها، چارت‌های داینامیک و تم‌ها
 ├── preview/
-│   └── demo.html              # محیط تست تعاملی با نمودارهای زنده و بدون نیاز به سرور
+│   └── demo.html              # محیط تست زنده و آفلاین با تمام تعاملات UX
 ├── install.sh                 # اسکریپت نصب و پیکربندی خودکار Nginx و APT Hook
 ├── uninstall.sh               # اسکریپت حذف تمیز و بازگشت به حالت اولیه
 └── README.md
@@ -70,54 +77,22 @@ cloudpanel-neon-dark/
 
 ---
 
-## 🛠️ نصب دستی (Manual Setup)
+## 🛡️ مقاومت ۱۰۰٪ در برابر آپدیت‌های کلودپنل (Update-Proof)
 
-اگر مایل هستید مراحل را به صورت دستی روی سرور انجام دهید:
-
-1. **کپی فایل‌های تم:**
-   ```bash
-   sudo mkdir -p /home/clp/custom-theme
-   sudo cp -r assets/css /home/clp/custom-theme/
-   sudo cp -r assets/js /home/clp/custom-theme/
-   sudo chown -R clp:clp /home/clp/custom-theme
-   ```
-
-2. **پیکربندی Nginx کلودپنل:**
-   فایل `/home/clp/services/nginx/sites-enabled/cloudpanel.conf` را باز کرده و قبل از آخرین `}` سرور، کدهای زیر را اضافه کنید:
-   ```nginx
-   sub_filter_types text/html;
-   sub_filter '</head>' '<link rel="stylesheet" href="/clp-custom/css/theme.css"><script defer src="/clp-custom/js/enhancer.js"></script></head>';
-   sub_filter_once on;
-
-   location ^~ /clp-custom/ {
-       alias /home/clp/custom-theme/;
-       access_log off;
-       expires 30d;
-   }
-   ```
-
-3. **راه‌اندازی مجدد سرویس Nginx کلودپنل:**
-   ```bash
-   sudo systemctl restart clp-nginx
-   ```
+* **بدون تغییر در سورس کد PHP:** فایل‌های هسته کلودپنل بازنویسی نمی‌شوند.
+* **تزریق Nginx `sub_filter`:** به صورت تمیز در کانفیگ `clp-nginx` قرار می‌گیرد.
+* **هوک سیستمی APT (`/etc/apt/apt.conf.d/99cloudpanel-theme`):** در صورت آپدیت پکیج کلودپنل، فایل‌های اختصاصی و قوانین Nginx خودکار پایدار می‌مانند.
 
 ---
 
 ## 🔄 حذف و بازگشت به حالت اولیه (Uninstall)
 
-برای بازگرداندن پنل به حالت اولیه پیش‌فرض کارخانه:
 ```bash
 sudo bash uninstall.sh
 ```
 
 ---
 
-## 🖥️ پیش‌نمایش آفلاین (Interactive Demo)
-
-برای مشاهده و تست زنده تمام بخش‌ها و تم‌ها قبل از پیاده‌سازی روی سرور اصلی، فایل `preview/demo.html` را در هر مرورگری باز کنید.
-
----
-
 ## 📄 مجوز (License)
 
-توسعه‌داده‌شده برای اهداف شخصی و سازمانی. این پروژه مستقل از تیم رسمی CloudPanel بوده و به صورت یک بسته الحاقی غیرمخرب عمل می‌کند.
+توسعه‌داده‌شده برای اهداف شخصی و سازمانی. این پروژه مستقل از تیم رسمی CloudPanel است.
