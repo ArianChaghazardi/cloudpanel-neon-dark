@@ -1,12 +1,16 @@
 /**
- * CloudPanel Neon Dark - Advanced UX Revolution & Multi-Theme Engine
+ * CloudPanel Neon Dark - Advanced UX Revolution & Mobile-First Engine
  * 
  * Capabilities:
- *  1. 7 Curated Designer Palettes (Blue, Cyan, AMOLED, Emerald, Violet, Amber, Crimson)
- *  2. Command Palette (Spotlight: Ctrl+K / Cmd+K)
- *  3. Sites Page Live Filtering, Search & Card/Table View Toggle
- *  4. Executive Dashboard Health Ribbon & Highcharts Dynamic Stats / Layout Toggle
- *  5. Floating Developer Quick Dock & Toast Notification Engine
+ *  1. 7 Curated Designer Palettes
+ *  2. Mobile App Bottom Navigation Bar (< 768px)
+ *  3. Real-Time Server Vital Gauges (CPU, RAM, Disk animated progress bars)
+ *  4. Official Tech Brand Badges (Node.js, Python, PHP, WordPress SVGs)
+ *  5. Command Palette (Spotlight: Ctrl+K / Cmd+K)
+ *  6. Sites Page Live Filtering, Search & Card/Table View Toggle
+ *  7. Workspace / Server Selector Header Breadcrumb
+ *  8. Highcharts Dynamic Stats / Layout Toggle
+ *  9. Toast Notification Engine
  */
 
 (function () {
@@ -67,6 +71,16 @@
     }
   ];
 
+  // Official Tech Stack SVGs
+  const TECH_ICONS = {
+    'nodejs': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l9 5.2v10.4L12 23l-9-5.2V7.2L12 2zm0 2.3L4.8 8.5v7l7.2 4.2 7.2-4.2v-7L12 4.3z"/></svg>`,
+    'php': `<svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="12" rx="10" ry="6"/><path d="M7 10h3v4H7zm7 0h3v4h-3z" fill="#fff"/></svg>`,
+    'python': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.9 2c-3.1 0-5.1 1.4-5.1 3.5v2.6h5.3v.9H4.3c-2.3 0-4.3 1.4-4.3 4.2 0 2.8 1.9 4.3 4.3 4.3h1.8v-2.5c0-2.3 2-4.2 4.3-4.2h5.3V8.1c0-2.3-2-3.5-5.1-3.5h1.2v-.9h-1.2v-1.7zm-2.4 2.1c.5 0 .9.4.9.9s-.4.9-.9.9-.9-.4-.9-.9.4-.9.9-.9zm2.6 17.9c3.1 0 5.1-1.4 5.1-3.5v-2.6h-5.3v-.9h7.8c2.3 0 4.3-1.4 4.3-4.2 0-2.8-1.9-4.3-4.3-4.3h-1.8v2.5c0 2.3-2 4.2-4.3 4.2h-5.3v2.7c0 2.3 2 3.5 5.1 3.5h-1.2v.9h1.2v1.7zm2.4-2.1c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9z"/></svg>`,
+    'wordpress': `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 3.6a8.4 8.4 0 0 0-4.7 1.4l5.3 14.6 2-5.7-1.7-4.9c.7-.1 1.3-.1 1.3-.1.4 0 .4-.6 0-.6h-3.6c-.4 0-.4.6 0 .6 0 0 .6 0 1.2.1l-1.5 4.3-2.1-6.1c.7-.1 1.3-.1 1.3-.1.4 0 .4-.6 0-.6H7.1c-.4 0-.4.6 0 .6 0 0 .6 0 1.1.1L5.4 15.3A8.4 8.4 0 0 0 12 20.4a8.4 8.4 0 0 0 8.4-8.4c0-2.1-.8-4.1-2.1-5.6l-3.3 9.4-3-8.8z" fill="#fff"/></svg>`,
+    'reverse_proxy': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>`,
+    'static': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>`
+  };
+
   function getActiveTheme() {
     return localStorage.getItem(STORAGE_THEME) || 'neon-blue';
   }
@@ -96,13 +110,15 @@
   // Pre-apply theme immediately
   applyTheme(getActiveTheme(), false);
 
-  // Initialize all enhancements upon DOM ready
+  // Initialize upon DOM ready
   document.addEventListener('DOMContentLoaded', function () {
     injectThemeSwitcher();
     setupHighchartsHook();
     setupCommandPalette();
+    injectHeaderBreadcrumb();
     enhanceSitesPageUX();
     enhanceDashboardUX();
+    injectMobileBottomNavigation();
     injectFloatingQuickDock();
   });
 
@@ -133,7 +149,35 @@
   }
 
   // ==========================================================================
-  // 2. Theme Switcher in Header
+  // 2. Server Breadcrumb & Header Workspace Switcher
+  // ==========================================================================
+  function injectHeaderBreadcrumb() {
+    const navLinkContainer = document.querySelector('.header .nav-link-container');
+    if (!navLinkContainer || document.getElementById('clp-server-pill')) return;
+
+    // Detect Hostname and IP
+    const hostnameEl = document.querySelector('.information-box a.click-to-copy');
+    const hostname = hostnameEl ? hostnameEl.textContent.trim() : (window.location.hostname || 'server');
+
+    const breadcrumb = document.createElement('div');
+    breadcrumb.id = 'clp-server-pill';
+    breadcrumb.className = 'clp-server-breadcrumb';
+    breadcrumb.title = 'Click to open Command Palette (Ctrl+K)';
+    breadcrumb.innerHTML = `
+      <span class="status-dot"></span>
+      <span style="font-weight: 600;">${hostname}</span>
+      <span style="font-size: 10px; color: var(--clp-text-muted);">▼</span>
+    `;
+
+    breadcrumb.addEventListener('click', function () {
+      if (window.openCommandPalette) window.openCommandPalette();
+    });
+
+    navLinkContainer.parentNode.insertBefore(breadcrumb, navLinkContainer);
+  }
+
+  // ==========================================================================
+  // 3. Theme Switcher in Header
   // ==========================================================================
   function injectThemeSwitcher() {
     const navbarRight = document.querySelector('.header .navbar-right ul');
@@ -188,7 +232,7 @@
   }
 
   // ==========================================================================
-  // 3. Command Palette (Spotlight: Ctrl+K / Cmd+K)
+  // 4. Command Palette (Spotlight: Ctrl+K / Cmd+K)
   // ==========================================================================
   function setupCommandPalette() {
     const paletteBackdrop = document.createElement('div');
@@ -212,7 +256,7 @@
           <a class="clp-palette-item" href="/logs"><div class="item-title">📜 System & Service Logs</div><span class="item-action">View</span></a>
           <a class="clp-palette-item" href="/user/settings"><div class="item-title">⚙️ User & Panel Settings</div><span class="item-action">Edit</span></a>
 
-          <div class="clp-palette-category">Quick Themes</div>
+          <div class="clp-palette-category">Visual Themes (7 Palettes)</div>
           <div class="clp-palette-item" data-action="theme" data-val="neon-blue"><div class="item-title">⚡ Neon Midnight Blue</div><span class="item-action">Activate</span></div>
           <div class="clp-palette-item" data-action="theme" data-val="cyber-cyan"><div class="item-title">🌊 Cyber Cyan</div><span class="item-action">Activate</span></div>
           <div class="clp-palette-item" data-action="theme" data-val="amoled-pure"><div class="item-title">🌑 AMOLED Pure Black</div><span class="item-action">Activate</span></div>
@@ -263,7 +307,6 @@
       if (e.target === paletteBackdrop) closePalette();
     });
 
-    // Real-time search filter in palette
     input.addEventListener('input', function () {
       filterPaletteItems(this.value.toLowerCase().trim());
     });
@@ -276,7 +319,6 @@
       });
     }
 
-    // Action clicks
     paletteBackdrop.querySelectorAll('.clp-palette-item[data-action]').forEach(item => {
       item.addEventListener('click', function () {
         const action = this.getAttribute('data-action');
@@ -318,7 +360,7 @@
   }
 
   // ==========================================================================
-  // 4. Sites Page UX Revolution (Live Search, Filter Pills & Card/Table Toggle)
+  // 5. Sites Page UX Revolution (Live Filter, Official Logos & Card Grid)
   // ==========================================================================
   function enhanceSitesPageUX() {
     const tableSites = document.querySelector('.table-sites');
@@ -327,7 +369,6 @@
     const cardTable = tableSites.closest('.card-table') || tableSites.closest('.card');
     if (!cardTable) return;
 
-    // Parse all site rows from table
     const siteRows = Array.from(tableSites.querySelectorAll('tbody tr'));
     const sitesData = [];
 
@@ -339,40 +380,78 @@
       const domain = domainLink ? domainLink.textContent.trim() : cells[0].textContent.trim();
       const manageUrl = domainLink ? domainLink.getAttribute('href') : '#';
       const user = cells[1].textContent.trim();
-      const appType = cells[2].textContent.trim();
+      const rawAppType = cells[2].textContent.trim().toLowerCase();
+
+      // Format Tech Stack Badge
+      let badgeClass = 'clp-tech-static';
+      let icon = TECH_ICONS.static;
+      let appName = 'Static';
+
+      if (rawAppType.includes('node')) {
+        badgeClass = 'clp-tech-nodejs';
+        icon = TECH_ICONS.nodejs;
+        appName = 'Node.js';
+      } else if (rawAppType.includes('word')) {
+        badgeClass = 'clp-tech-wordpress';
+        icon = TECH_ICONS.wordpress;
+        appName = 'WordPress';
+      } else if (rawAppType.includes('pyth')) {
+        badgeClass = 'clp-tech-python';
+        icon = TECH_ICONS.python;
+        appName = 'Python';
+      } else if (rawAppType.includes('php')) {
+        badgeClass = 'clp-tech-php';
+        icon = TECH_ICONS.php;
+        appName = 'PHP';
+      } else if (rawAppType.includes('proxy')) {
+        badgeClass = 'clp-tech-proxy';
+        icon = TECH_ICONS.reverse_proxy;
+        appName = 'Reverse Proxy';
+      }
+
+      // Upgrade Table Cell with Icon Badge
+      cells[2].innerHTML = `
+        <span class="clp-tech-badge ${badgeClass}">
+          ${icon}
+          <span>${appName}</span>
+        </span>
+      `;
 
       sitesData.push({
         element: row,
         domain: domain,
         manageUrl: manageUrl,
         user: user,
-        appType: appType
+        appType: rawAppType,
+        appName: appName,
+        badgeClass: badgeClass,
+        icon: icon
       });
 
-      // Enhance domain cell in table view with copy and external visit icon
+      // Enhance domain cell with copy button and visit icon
       if (domainLink && !domainLink.querySelector('.clp-cell-actions')) {
         const actionsWrap = document.createElement('span');
         actionsWrap.className = 'clp-cell-actions';
-        actionsWrap.style.cssText = 'display: inline-flex; align-items: center; gap: 6px; margin-left: 8px;';
+        actionsWrap.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; margin-left: 10px;';
         actionsWrap.innerHTML = `
-          <a href="http://${domain}" target="_blank" rel="noopener noreferrer" title="Visit Site" style="color: var(--clp-text-muted); font-size: 11px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <a href="http://${domain}" target="_blank" rel="noopener noreferrer" title="Visit Site ↗" style="color: var(--clp-text-muted); font-size: 11px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
           <span class="clp-copy-domain" title="Copy Domain" style="cursor: pointer; color: var(--clp-text-muted); font-size: 11px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           </span>
         `;
         actionsWrap.querySelector('.clp-copy-domain').addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           navigator.clipboard.writeText(domain);
-          showToast(`Domain "${domain}" copied to clipboard!`);
+          showToast(`Domain "${domain}" copied!`);
         });
         domainLink.appendChild(actionsWrap);
       }
     });
 
-    // Create Card Grid Container
+    // Build Card Grid
     const cardGridContainer = document.createElement('div');
     cardGridContainer.className = 'clp-sites-card-grid';
     cardGridContainer.style.display = 'none';
@@ -381,7 +460,7 @@
       const card = document.createElement('div');
       card.className = 'clp-site-card';
       card.setAttribute('data-domain', site.domain.toLowerCase());
-      card.setAttribute('data-app', site.appType.toLowerCase());
+      card.setAttribute('data-app', site.appType);
 
       card.innerHTML = `
         <div>
@@ -390,7 +469,10 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--clp-accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
               <span>${site.domain}</span>
             </a>
-            <span class="badge badge-info" style="font-size: 11px;">${site.appType}</span>
+            <span class="clp-tech-badge ${site.badgeClass}">
+              ${site.icon}
+              <span>${site.appName}</span>
+            </span>
           </div>
           <div class="clp-site-card-meta">
             <div class="clp-site-meta-item">
@@ -398,8 +480,8 @@
               <strong>${site.user}</strong>
             </div>
             <div class="clp-site-meta-item">
-              <span>Status:</span>
-              <span class="status-pill status-active" style="font-size: 11px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Active</span>
+              <span>Security:</span>
+              <span class="badge badge-success" style="font-size: 11px;">🔒 SSL Active</span>
             </div>
           </div>
         </div>
@@ -413,21 +495,22 @@
 
     cardTable.parentNode.insertBefore(cardGridContainer, cardTable.nextSibling);
 
-    // Create Interactive Toolbar
+    // Build Toolbar
     const toolbar = document.createElement('div');
     toolbar.className = 'clp-sites-toolbar';
 
     toolbar.innerHTML = `
       <div class="clp-sites-search-box">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" class="form-control clp-sites-search-input" placeholder="Instant search domains or users...">
+        <input type="text" class="form-control clp-sites-search-input" placeholder="Search domains or users...">
       </div>
       <div class="clp-filter-pills">
         <span class="clp-filter-pill active" data-filter="all">All (${sitesData.length})</span>
         <span class="clp-filter-pill" data-filter="php">PHP</span>
         <span class="clp-filter-pill" data-filter="node">Node.js</span>
-        <span class="clp-filter-pill" data-filter="python">Python</span>
-        <span class="clp-filter-pill" data-filter="proxy">Reverse Proxy</span>
+        <span class="clp-filter-pill" data-filter="pyth">Python</span>
+        <span class="clp-filter-pill" data-filter="word">WordPress</span>
+        <span class="clp-filter-pill" data-filter="proxy">Proxy</span>
         <span class="clp-filter-pill" data-filter="static">Static</span>
       </div>
       <div class="clp-view-toggle">
@@ -442,7 +525,6 @@
 
     cardTable.parentNode.insertBefore(toolbar, cardTable);
 
-    // Live Search & Filter Logic
     const searchInput = toolbar.querySelector('.clp-sites-search-input');
     const filterPills = toolbar.querySelectorAll('.clp-filter-pill');
     let currentFilter = 'all';
@@ -452,7 +534,7 @@
 
       sitesData.forEach(site => {
         const matchesQuery = site.domain.toLowerCase().includes(q) || site.user.toLowerCase().includes(q);
-        const matchesFilter = currentFilter === 'all' || site.appType.toLowerCase().includes(currentFilter);
+        const matchesFilter = currentFilter === 'all' || site.appType.includes(currentFilter);
         const shouldShow = matchesQuery && matchesFilter;
 
         site.element.style.display = shouldShow ? '' : 'none';
@@ -472,9 +554,11 @@
       });
     });
 
-    // View Mode Toggle (Table vs Grid)
     const viewButtons = toolbar.querySelectorAll('.clp-view-btn');
     function setViewMode(mode) {
+      // On mobile (< 768px), always use card mode
+      if (window.innerWidth < 768) mode = 'grid';
+
       localStorage.setItem(STORAGE_VIEW, mode);
       viewButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-view') === mode));
 
@@ -493,23 +577,26 @@
       });
     });
 
-    // Restore saved view mode
     const savedView = localStorage.getItem(STORAGE_VIEW) || 'table';
     setViewMode(savedView);
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth < 768) {
+        setViewMode('grid');
+      }
+    });
   }
 
   // ==========================================================================
-  // 5. Dashboard UX Revolution (Executive Ribbon, SSH Copier & Chart Controls)
+  // 6. Dashboard UX Revolution (Vitals Gauges, Health Ribbon & Chart Controls)
   // ==========================================================================
   function enhanceDashboardUX() {
     const infoBoxesContainer = document.querySelector('.information-box-container');
     if (!infoBoxesContainer) return;
 
-    // Retrieve IP
     const ipElement = infoBoxesContainer.querySelector('a.click-to-copy');
     const serverIp = ipElement ? ipElement.textContent.trim() : window.location.hostname;
 
-    // Inject Executive Health Ribbon above information box container
     const card = infoBoxesContainer.closest('.card');
     if (card && !document.querySelector('.clp-health-ribbon')) {
       const ribbon = document.createElement('div');
@@ -520,7 +607,7 @@
           <span class="clp-status-dot"></span>
           <div>
             <div style="font-weight: 700; font-size: 14px; color: var(--clp-text-heading);">Server Status: Optimal Performance</div>
-            <div style="font-size: 12px; color: var(--clp-text-muted);">All core daemons (Nginx, PHP-FPM, MySQL) are running smoothly.</div>
+            <div style="font-size: 12px; color: var(--clp-text-muted);">Core daemons (Nginx, PHP-FPM, MySQL) active & healthy.</div>
           </div>
         </div>
         <div class="clp-health-actions">
@@ -540,20 +627,69 @@
       });
     }
 
+    // Inject Real-Time Server Vital Gauges (CPU, Memory, Disk progress bars)
+    if (card && !document.querySelector('.clp-vitals-container')) {
+      const vitals = document.createElement('div');
+      vitals.className = 'clp-vitals-container';
+
+      vitals.innerHTML = `
+        <div class="clp-vital-card" id="clp-vital-cpu">
+          <div class="clp-vital-header">
+            <span class="clp-vital-title">⚡ CPU Load</span>
+            <span class="clp-vital-value" id="clp-cpu-val">--%</span>
+          </div>
+          <div class="clp-vital-bar-wrap">
+            <div class="clp-vital-bar" id="clp-cpu-bar" style="width: 25%;"></div>
+          </div>
+          <div class="clp-vital-footer">
+            <span>Utilization</span>
+            <span>Cores Active</span>
+          </div>
+        </div>
+
+        <div class="clp-vital-card" id="clp-vital-ram">
+          <div class="clp-vital-header">
+            <span class="clp-vital-title">🧠 Memory (RAM)</span>
+            <span class="clp-vital-value" id="clp-ram-val">--%</span>
+          </div>
+          <div class="clp-vital-bar-wrap">
+            <div class="clp-vital-bar" id="clp-ram-bar" style="width: 45%;"></div>
+          </div>
+          <div class="clp-vital-footer">
+            <span>System Cache</span>
+            <span>Healthy Buffer</span>
+          </div>
+        </div>
+
+        <div class="clp-vital-card" id="clp-vital-disk">
+          <div class="clp-vital-header">
+            <span class="clp-vital-title">💾 Storage (SSD)</span>
+            <span class="clp-vital-value" id="clp-disk-val">--%</span>
+          </div>
+          <div class="clp-vital-bar-wrap">
+            <div class="clp-vital-bar" id="clp-disk-bar" style="width: 32%;"></div>
+          </div>
+          <div class="clp-vital-footer">
+            <span>I/O Speed</span>
+            <span>High Performance</span>
+          </div>
+        </div>
+      `;
+
+      card.parentNode.insertBefore(vitals, card);
+    }
+
     // Chart Layout & Stats Controls
     const chartsCard = document.querySelector('.dashboard-charts-container .card');
     const chartContainer = document.querySelector('.chart-container');
     if (chartsCard && chartContainer) {
       const header = chartsCard.querySelector('.card-header');
       if (header && !document.getElementById('clp-chart-layout-toggle')) {
-        const controlsWrap = document.createElement('div');
-        controlsWrap.style.cssText = 'display: flex; align-items: center; gap: 10px;';
-
         const toggleBtn = document.createElement('button');
         toggleBtn.id = 'clp-chart-layout-toggle';
         toggleBtn.type = 'button';
         toggleBtn.className = 'btn btn-sm btn-white';
-        toggleBtn.style.cssText = 'padding: 4px 10px; font-size: 12px;';
+        toggleBtn.style.cssText = 'padding: 4px 10px; font-size: 12px; margin-right: 8px;';
         toggleBtn.innerHTML = '🔲 Focus View';
 
         toggleBtn.addEventListener('click', function () {
@@ -564,7 +700,6 @@
           }
         });
 
-        // Insert before time range selector
         const select = header.querySelector('select');
         if (select) {
           select.parentNode.insertBefore(toggleBtn, select);
@@ -574,7 +709,7 @@
   }
 
   // ==========================================================================
-  // 6. Highcharts Hook & Dynamic Stats Injector
+  // 7. Highcharts Hook & Dynamic Stats Injector
   // ==========================================================================
   function setupHighchartsHook() {
     if (!window.Highcharts) return;
@@ -585,6 +720,7 @@
       const enhancedOptions = enhanceChartOptions(userOptions, themeColors);
       const chartInstance = originalChart.call(this, renderTo, enhancedOptions, function (chart) {
         injectDynamicChartStats(renderTo, chart);
+        syncVitalsFromChart(renderTo, chart);
         if (callback) callback(chart);
       });
       return chartInstance;
@@ -594,9 +730,49 @@
       window.Highcharts.charts.forEach(chart => {
         if (chart) {
           modernizeChart(chart, getActiveTheme());
-          if (chart.renderTo) injectDynamicChartStats(chart.renderTo.id, chart);
+          if (chart.renderTo) {
+            injectDynamicChartStats(chart.renderTo.id, chart);
+            syncVitalsFromChart(chart.renderTo.id, chart);
+          }
         }
       });
+    }
+  }
+
+  function syncVitalsFromChart(containerId, chart) {
+    if (!chart || !chart.series || !chart.series[0]) return;
+    const data = chart.series[0].yData;
+    if (!data || data.length === 0) return;
+
+    const latest = data[data.length - 1];
+    if (typeof latest !== 'number') return;
+
+    const valStr = Math.round(latest) + '%';
+
+    if (containerId === 'cpuChart') {
+      const cpuVal = document.getElementById('clp-cpu-val');
+      const cpuBar = document.getElementById('clp-cpu-bar');
+      if (cpuVal) cpuVal.textContent = valStr;
+      if (cpuBar) {
+        cpuBar.style.width = valStr;
+        cpuBar.className = 'clp-vital-bar' + (latest > 85 ? ' danger' : (latest > 65 ? ' warn' : ''));
+      }
+    } else if (containerId === 'memoryChart') {
+      const ramVal = document.getElementById('clp-ram-val');
+      const ramBar = document.getElementById('clp-ram-bar');
+      if (ramVal) ramVal.textContent = valStr;
+      if (ramBar) {
+        ramBar.style.width = valStr;
+        ramBar.className = 'clp-vital-bar' + (latest > 85 ? ' danger' : (latest > 70 ? ' warn' : ''));
+      }
+    } else if (containerId === 'diskUsageChart') {
+      const diskVal = document.getElementById('clp-disk-val');
+      const diskBar = document.getElementById('clp-disk-bar');
+      if (diskVal) diskVal.textContent = valStr;
+      if (diskBar) {
+        diskBar.style.width = valStr;
+        diskBar.className = 'clp-vital-bar' + (latest > 90 ? ' danger' : (latest > 75 ? ' warn' : ''));
+      }
     }
   }
 
@@ -608,7 +784,6 @@
     const nums = seriesData.filter(n => typeof n === 'number');
     if (nums.length === 0) return;
 
-    const min = Math.min(...nums).toFixed(1);
     const max = Math.max(...nums).toFixed(1);
     const avg = (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(1);
 
@@ -705,7 +880,59 @@
   }
 
   // ==========================================================================
-  // 7. Floating Quick Dock (Bottom Center)
+  // 8. Mobile App Bottom Navigation Bar (< 768px)
+  // ==========================================================================
+  function injectMobileBottomNavigation() {
+    if (document.querySelector('.clp-mobile-nav')) return;
+
+    const nav = document.createElement('nav');
+    nav.className = 'clp-mobile-nav';
+
+    const path = window.location.pathname;
+
+    nav.innerHTML = `
+      <ul class="clp-mobile-nav-items">
+        <li>
+          <a href="/dashboard" class="clp-mobile-nav-link ${path.includes('dashboard') ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/sites" class="clp-mobile-nav-link ${path.includes('sites') ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span>Sites</span>
+          </a>
+        </li>
+        <li>
+          <a href="/site/new" class="clp-mobile-fab" title="Add Site">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="/security" class="clp-mobile-nav-link ${path.includes('security') ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Security</span>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="clp-mobile-nav-link" id="clp-mobile-search-btn" style="background: none; border: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>Search</span>
+          </button>
+        </li>
+      </ul>
+    `;
+
+    document.body.appendChild(nav);
+
+    nav.querySelector('#clp-mobile-search-btn').addEventListener('click', function () {
+      if (window.openCommandPalette) window.openCommandPalette();
+    });
+  }
+
+  // ==========================================================================
+  // 9. Floating Quick Dock (Desktop)
   // ==========================================================================
   function injectFloatingQuickDock() {
     if (document.querySelector('.clp-floating-dock')) return;

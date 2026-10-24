@@ -1,23 +1,230 @@
 /* ==========================================================================
-   CloudPanel Neon Dark - UX Revolution & Interactive Components
-   Brings modern developer-first UX: Command Palette, Live Filters, Card View,
-   Executive Health Ribbons, Floating Quick Dock & Toast Alerts.
+   CloudPanel Neon Dark - UX Revolution & Mobile-First Responsive Overhaul
+   Enterprise-grade UX inspired by Linear, Vercel, and Cloudflare Dashboard:
+   - Complete Mobile-First Responsiveness (0 horizontal overflow)
+   - Mobile App Bottom Navigation Bar (< 768px)
+   - Real-time Server Vital Gauges (CPU, RAM, Disk visual progress rings)
+   - Tech Stack Brand Badges with SVG Icons (Node.js, Python, PHP, WordPress)
+   - Spotlight Command Palette (Ctrl+K / Cmd+K)
+   - Live Search, Filters & Card/Table View Mode
+   - Workspace & Server Selector Breadcrumb
    ========================================================================== */
 
 /* ==========================================================================
-   1. Command Palette (Spotlight Search: Ctrl + K)
+   1. Server Selector & Header Breadcrumb
+   ========================================================================== */
+.clp-server-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--clp-bg-input);
+  border: 1px solid var(--clp-border-default);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  color: var(--clp-text-heading);
+  transition: all var(--clp-transition-fast);
+  cursor: pointer;
+  user-select: none;
+}
+
+.clp-server-breadcrumb:hover {
+  border-color: var(--clp-border-hover);
+  background: var(--clp-bg-surface-elevated);
+  box-shadow: 0 0 12px var(--clp-accent-glow);
+}
+
+.clp-server-breadcrumb .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.clp-header-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 12px;
+}
+
+.clp-header-stat-pill {
+  font-size: 11.5px;
+  font-family: var(--clp-font-mono);
+  color: var(--clp-text-muted);
+  background: var(--clp-bg-input);
+  border: 1px solid var(--clp-border-subtle);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.clp-header-stat-pill strong {
+  color: var(--clp-accent-hover);
+}
+
+/* ==========================================================================
+   2. Real-Time Server Vital Gauges (CPU, Memory, Disk Bars)
+   ========================================================================== */
+.clp-vitals-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.clp-vital-card {
+  background: var(--clp-bg-surface);
+  border: 1px solid var(--clp-border-default);
+  border-radius: var(--clp-radius-lg);
+  padding: 16px 20px;
+  box-shadow: var(--clp-shadow-sm);
+  transition: all var(--clp-transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.clp-vital-card:hover {
+  border-color: var(--clp-border-hover);
+  box-shadow: var(--clp-shadow-glow), var(--clp-shadow-md);
+  transform: translateY(-2px);
+}
+
+.clp-vital-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.clp-vital-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clp-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.clp-vital-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--clp-text-heading);
+  font-family: var(--clp-font-mono);
+}
+
+.clp-vital-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: var(--clp-bg-input);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--clp-border-subtle);
+}
+
+.clp-vital-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--clp-accent-gradient);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px var(--clp-accent-glow);
+}
+
+.clp-vital-bar.warn {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4) !important;
+}
+
+.clp-vital-bar.danger {
+  background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
+}
+
+.clp-vital-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--clp-text-muted);
+}
+
+/* ==========================================================================
+   3. Tech Stack Brand Badges (With Official SVG Logos)
+   ========================================================================== */
+.clp-tech-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border: 1px solid transparent;
+  transition: all var(--clp-transition-fast);
+}
+
+.clp-tech-badge svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.clp-tech-nodejs {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.clp-tech-php {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.clp-tech-python {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.clp-tech-wordpress {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0284c7;
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.clp-tech-proxy {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.clp-tech-static {
+  background: rgba(148, 163, 184, 0.12);
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* ==========================================================================
+   4. Command Palette (Spotlight: Ctrl+K / Cmd+K)
    ========================================================================== */
 .clp-palette-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   z-index: 99999;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 14vh;
+  padding-top: 12vh;
+  padding-left: 16px;
+  padding-right: 16px;
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--clp-transition-fast);
@@ -32,7 +239,7 @@
   background: var(--clp-bg-surface-elevated);
   border: 1px solid var(--clp-border-hover);
   border-radius: var(--clp-radius-xl);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--clp-shadow-glow);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), var(--clp-shadow-glow);
   width: 100%;
   max-width: 620px;
   overflow: hidden;
@@ -131,7 +338,7 @@
 }
 
 /* ==========================================================================
-   2. Sites Page Interactive Toolbar & Filter System
+   5. Sites Page Interactive Toolbar & Filter System
    ========================================================================== */
 .clp-sites-toolbar {
   background: var(--clp-bg-surface);
@@ -151,7 +358,7 @@
   position: relative;
   flex: 1;
   min-width: 240px;
-  max-width: 360px;
+  max-width: 380px;
 }
 
 .clp-sites-search-box svg {
@@ -187,9 +394,9 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 .clp-filter-pill {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 9999px;
   border: 1px solid var(--clp-border-subtle);
   background: var(--clp-bg-surface-elevated);
@@ -241,7 +448,7 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 /* ==========================================================================
-   3. Sites Card Grid (Modern View Option)
+   6. Sites Card Grid (Modern Touch-Friendly View)
    ========================================================================== */
 .clp-sites-card-grid {
   display: grid;
@@ -340,7 +547,7 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 /* ==========================================================================
-   4. Executive Server Health Hero Ribbon (Dashboard)
+   7. Executive Server Health Hero Ribbon (Dashboard)
    ========================================================================== */
 .clp-health-ribbon {
   background: var(--clp-accent-gradient-soft);
@@ -368,6 +575,7 @@ html[dir="rtl"] .clp-sites-search-input {
   background: var(--clp-success);
   box-shadow: 0 0 10px var(--clp-success);
   position: relative;
+  flex-shrink: 0;
 }
 
 .clp-status-dot::after {
@@ -388,6 +596,7 @@ html[dir="rtl"] .clp-sites-search-input {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .clp-quick-ssh-btn {
@@ -413,12 +622,13 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 /* ==========================================================================
-   5. Chart Layout Controls & Dynamic Statistics Badges
+   8. Chart Layout Controls & Dynamic Statistics Badges
    ========================================================================== */
 .clp-chart-stat-badges {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .clp-stat-pill {
@@ -435,13 +645,12 @@ html[dir="rtl"] .clp-sites-search-input {
   color: var(--clp-accent-hover);
 }
 
-/* Layout Mode: Focus Mode (Full Width Stacking) */
 .chart-container.focus-mode {
   grid-template-columns: 1fr !important;
 }
 
 /* ==========================================================================
-   6. Floating Quick Dock (Bottom Center)
+   9. Floating Quick Dock (Desktop)
    ========================================================================== */
 .clp-floating-dock {
   position: fixed;
@@ -494,7 +703,82 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 /* ==========================================================================
-   7. Toast Notification System
+   10. Mobile App Bottom Navigation Bar (< 768px)
+   Replaces clunky mobile navigation with native App-like UX
+   ========================================================================== */
+.clp-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: var(--clp-bg-surface-elevated);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid var(--clp-border-default);
+  z-index: 9999;
+  padding: 0 8px;
+  box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.5);
+}
+
+.clp-mobile-nav-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clp-mobile-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--clp-text-muted);
+  font-size: 10.5px;
+  font-weight: 500;
+  gap: 4px;
+  text-decoration: none !important;
+  padding: 6px 12px;
+  border-radius: var(--clp-radius-sm);
+  transition: all var(--clp-transition-fast);
+}
+
+.clp-mobile-nav-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.clp-mobile-nav-link.active,
+.clp-mobile-nav-link:hover {
+  color: var(--clp-accent-hover);
+}
+
+/* Floating Action Button for Add Site on Mobile */
+.clp-mobile-fab {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--clp-accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 16px var(--clp-accent-glow);
+  margin-top: -16px;
+  border: 3px solid var(--clp-bg-canvas);
+  transition: transform var(--clp-transition-fast);
+}
+
+.clp-mobile-fab:active {
+  transform: scale(0.92);
+}
+
+/* ==========================================================================
+   11. Toast Notification System
    ========================================================================== */
 .clp-toast-container {
   position: fixed;
@@ -539,4 +823,163 @@ html[dir="rtl"] .clp-toast-container {
 
 @keyframes clp-toast-out {
   to { transform: translateY(20px); opacity: 0; }
+}
+
+/* ==========================================================================
+   12. COMPLETE RESPONSIVE BREAKPOINT SYSTEM
+   Mobile, Tablet & Large Screens Precision Rules
+   ========================================================================== */
+
+/* Tablet & Mobile Screens (< 992px) */
+@media (max-width: 991.98px) {
+  .main-content {
+    padding: 20px 18px 40px 18px !important;
+  }
+
+  .sidebar {
+    width: 200px !important;
+  }
+
+  .chart-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .information-box-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .clp-vitals-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .clp-header-stats {
+    display: none !important;
+  }
+}
+
+/* Mobile Screens (< 768px) */
+@media (max-width: 767.98px) {
+  body {
+    padding-bottom: 74px !important; /* Prevent bottom nav overlap */
+  }
+
+  .clp-mobile-nav {
+    display: block !important;
+  }
+
+  .clp-floating-dock {
+    display: none !important; /* Replaced by mobile bottom nav */
+  }
+
+  .header {
+    height: 58px !important;
+    padding: 0 12px !important;
+  }
+
+  .header .logo {
+    padding: 0 10px !important;
+    border-right: none !important;
+  }
+
+  .header .nav-link-container {
+    display: none !important; /* Handled by bottom mobile nav */
+  }
+
+  /* Hide old desktop sidebar on mobile */
+  .sidebar {
+    display: none !important;
+  }
+
+  .main-container {
+    display: block !important;
+  }
+
+  .main-content {
+    padding: 16px 14px 40px 14px !important;
+  }
+
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .page-header .page-title h1 {
+    font-size: 20px !important;
+  }
+
+  /* Server Info Boxes on Mobile */
+  .information-box-container {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .information-box {
+    padding: 14px 16px !important;
+  }
+
+  /* Sites Toolbar on Mobile */
+  .clp-sites-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 12px 14px !important;
+  }
+
+  .clp-sites-search-box {
+    max-width: 100% !important;
+  }
+
+  .clp-filter-pills {
+    overflow-x: auto !important;
+    padding-bottom: 4px !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .clp-view-toggle {
+    display: none !important; /* Force card view on mobile for zero horizontal scroll */
+  }
+
+  /* Force sites table into modern responsive card grid on phone */
+  .card-table .table-sites {
+    display: none !important;
+  }
+
+  .clp-sites-card-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .clp-site-card {
+    padding: 16px !important;
+  }
+
+  .clp-health-ribbon {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .clp-health-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .clp-quick-ssh-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Palette modal on mobile */
+  .clp-palette-backdrop {
+    padding-top: 6vh !important;
+  }
+
+  .clp-toast-container {
+    right: 14px !important;
+    left: 14px !important;
+    bottom: 78px !important;
+  }
 }
