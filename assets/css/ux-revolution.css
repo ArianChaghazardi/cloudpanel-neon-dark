@@ -991,10 +991,15 @@ html[dir="rtl"] .clp-toast-container {
   /* ==========================================================================
      Mobile First Core Layout (< 768px)
      ========================================================================== */
+  html,
   body,
   html body,
   html.dark body {
     padding-bottom: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    position: relative !important;
   }
 
   /* 1. Header Precision Fit (Clean 56px Bar, Dropdowns Overflow Unclipped) */
@@ -1004,14 +1009,18 @@ html[dir="rtl"] .clp-toast-container {
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
-    padding: 0 14px !important;
+    padding: 0 12px !important;
     justify-content: space-between !important;
-    overflow: visible !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
     display: flex !important;
     align-items: center !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 1000 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
   }
 
   .header .logo,
@@ -1076,10 +1085,10 @@ html[dir="rtl"] .clp-toast-container {
   .header .navbar-right > ul,
   html body .header .navbar-right > ul,
   html.dark body .header .navbar-right > ul {
-    gap: 8px !important;
+    gap: 6px !important;
     height: 56px !important;
     margin: 0 !important;
-    padding: 0 4px 0 0 !important;
+    padding: 0 !important;
     display: flex !important;
     align-items: center !important;
   }
@@ -1135,6 +1144,37 @@ html[dir="rtl"] .clp-toast-container {
     left: 12px !important;
   }
 
+  /* Dark mode toggle as 36px icon circle on mobile */
+  .header .navbar-right .theme-switcher a {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid var(--clp-border-default) !important;
+    background: var(--clp-bg-surface-elevated) !important;
+  }
+
+  /* Notifications as 36px icon circle on mobile */
+  .header .navbar-right .notifications a {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0 !important;
+    border: 1px solid var(--clp-border-default) !important;
+    background: var(--clp-bg-surface-elevated) !important;
+  }
+
   /* Admin area as 36px icon circle on mobile */
   .header .navbar-right .admin-area a {
     width: 36px !important;
@@ -1155,9 +1195,29 @@ html[dir="rtl"] .clp-toast-container {
     height: 16px !important;
   }
 
+  /* User avatar as 36px circle without text spill on mobile */
+  .header .navbar-right .user-avatar a {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    border: 1px solid var(--clp-border-default) !important;
+    background: var(--clp-bg-surface-elevated) !important;
+  }
+
+  .header .navbar-right .user-avatar a::after {
+    display: none !important;
+  }
+
   .header .navbar-right .user-avatar img {
-    width: 32px !important;
-    height: 32px !important;
+    width: 30px !important;
+    height: 30px !important;
     border-radius: 50% !important;
   }
 
@@ -1332,6 +1392,9 @@ html[dir="rtl"] .clp-toast-container {
     gap: 8px !important;
     padding: 12px 14px !important;
     margin: 8px 0 16px 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .site-info-box {
@@ -1340,6 +1403,7 @@ html[dir="rtl"] .clp-toast-container {
     align-items: center !important;
     padding: 8px 0 !important;
     border-bottom: 1px solid var(--clp-border-subtle) !important;
+    min-width: 0 !important;
   }
 
   .site-info-box:last-child {
@@ -1355,31 +1419,116 @@ html[dir="rtl"] .clp-toast-container {
   .site-info-value {
     font-size: 13px !important;
     font-weight: 600 !important;
+    word-break: break-all !important;
   }
 
-  /* 6. Dashboard Cockpit Gauges */
+  /* 6. Dashboard Cockpit Gauges (Full-Width Responsive Cards) */
   .clp-vitals-cockpit,
   .clp-radial-cockpit {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  .clp-gauge-card,
   .clp-cockpit-card {
-    padding: 12px 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px 18px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-radius: var(--clp-radius-xl) !important;
   }
 
-  .clp-gauge-canvas {
-    width: 64px !important;
-    height: 64px !important;
+  .clp-cockpit-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
   }
 
-  .clp-gauge-value {
+  .clp-cockpit-title {
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+  }
+
+  .clp-cockpit-status {
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+  }
+
+  .clp-cockpit-sub {
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .clp-cockpit-radial {
+    width: 78px !important;
+    height: 78px !important;
+    min-width: 78px !important;
+    flex-shrink: 0 !important;
+    margin-left: 14px !important;
+  }
+
+  .clp-radial-meter {
+    width: 78px !important;
+    height: 78px !important;
+  }
+
+  .clp-radial-val {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+  }
+
+  html[dir="rtl"] .clp-cockpit-radial,
+  .rtl .clp-cockpit-radial {
+    margin-left: 0 !important;
+    margin-right: 14px !important;
+  }
+
+  /* Dashboard System Info Key-Value Cards */
+  .information-box-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .information-box {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 14px !important;
+    background: var(--clp-bg-input) !important;
+    border: 1px solid var(--clp-border-subtle) !important;
+    border-radius: var(--clp-radius-md) !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .information-box h4 {
+    font-size: 12px !important;
+    margin: 0 !important;
+    color: var(--clp-text-muted) !important;
+  }
+
+  .information-box a,
+  .information-box span,
+  .information-box {
     font-size: 13px !important;
-  }
-
-  .clp-gauge-label {
-    font-size: 10.5px !important;
+    font-weight: 600 !important;
+    word-break: break-all !important;
   }
 
   .clp-health-ribbon {
@@ -1388,6 +1537,9 @@ html[dir="rtl"] .clp-toast-container {
     padding: 12px 14px !important;
     gap: 10px !important;
     border-radius: var(--clp-radius-lg) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .clp-pulse-indicator {
@@ -1413,24 +1565,35 @@ html[dir="rtl"] .clp-toast-container {
 
   /* 7. Sites Page Toolbar, Summary Banner & Cards */
   .clp-sites-summary-banner {
-    display: flex !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 10px !important;
-    margin-bottom: 14px !important;
-    padding-bottom: 4px !important;
-    scrollbar-width: none !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-  .clp-sites-summary-banner::-webkit-scrollbar {
-    display: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 16px !important;
   }
 
   .clp-summary-card {
-    flex: 0 0 78% !important;
-    max-width: 280px !important;
+    width: 100% !important;
+    max-width: 100% !important;
     padding: 12px 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  .clp-summary-card:nth-child(3) {
+    grid-column: 1 / -1 !important;
+  }
+
+  .clp-summary-label {
+    font-size: 10.5px !important;
+    letter-spacing: 0.04em !important;
+    margin-bottom: 4px !important;
+  }
+
+  .clp-summary-val {
+    font-size: 17px !important;
+    gap: 6px !important;
   }
 
   .clp-sites-toolbar {
