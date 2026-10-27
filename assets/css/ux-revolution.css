@@ -647,12 +647,132 @@ html[dir="rtl"] .clp-sites-search-input {
   opacity: 1;
 }
 
+.clp-site-card.is-pinned {
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.12), var(--clp-shadow-sm) !important;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.04) 0%, var(--clp-bg-surface) 100%) !important;
+}
+
+.clp-site-card.is-pinned::before {
+  opacity: 1 !important;
+}
+
 .clp-site-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
+}
+
+.clp-site-card-domain-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.clp-domain-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clp-site-card-header-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.clp-pin-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--clp-radius-sm);
+  color: var(--clp-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  transition: all var(--clp-transition-fast);
+  flex-shrink: 0;
+}
+
+.clp-pin-btn:hover {
+  color: var(--clp-accent);
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.25);
+  transform: scale(1.08);
+}
+
+.clp-pin-btn.is-pinned {
+  color: var(--clp-accent);
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.clp-pin-btn svg {
+  transition: transform var(--clp-transition-fast);
+}
+
+.clp-pin-btn.is-pinned svg {
+  transform: rotate(45deg);
+}
+
+.clp-table-pin-btn {
+  background: transparent;
+  border: none;
+  color: var(--clp-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 4px;
+  transition: all var(--clp-transition-fast);
+}
+
+.clp-table-pin-btn:hover {
+  color: var(--clp-accent);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.clp-table-pin-btn.is-pinned {
+  color: var(--clp-accent);
+}
+
+.clp-table-pin-btn.is-pinned svg {
+  transform: rotate(45deg);
+}
+
+.clp-pinned-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--clp-accent);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  letter-spacing: 0.3px;
+}
+
+.clp-pinned-badge::before {
+  content: '📌';
+  font-size: 10px;
+}
+
+.table-sites tbody tr.is-pinned td {
+  background-color: rgba(56, 189, 248, 0.04) !important;
+  border-top: 1px solid rgba(56, 189, 248, 0.2) !important;
 }
 
 .clp-site-card-domain {
@@ -1631,6 +1751,15 @@ html[dir="rtl"] .clp-toast-container {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 12px !important;
+  }
+
+  .clp-site-card-header {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .clp-site-card-domain-wrap {
+    max-width: 100% !important;
   }
 
   /* 8. Tables Horizontal Scroll */

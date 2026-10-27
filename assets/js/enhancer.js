@@ -17,7 +17,41 @@
 
   const STORAGE_THEME = 'clp_custom_theme';
   const STORAGE_VIEW = 'clp_sites_view_mode';
+  const STORAGE_PINNED_SITES = 'clp_pinned_sites';
   const VITALS_API_URL = '/clp-custom/api/vitals.php';
+
+  function getPinnedSites() {
+    try {
+      const raw = localStorage.getItem(STORAGE_PINNED_SITES);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function isSitePinned(domain) {
+    if (!domain) return false;
+    const pinned = getPinnedSites();
+    return pinned.includes(domain.toLowerCase().trim());
+  }
+
+  function toggleSitePin(domain) {
+    if (!domain) return false;
+    const d = domain.toLowerCase().trim();
+    let pinned = getPinnedSites();
+    const isPinned = pinned.includes(d);
+    if (isPinned) {
+      pinned = pinned.filter(x => x !== d);
+    } else {
+      pinned.unshift(d);
+    }
+    try {
+      localStorage.setItem(STORAGE_PINNED_SITES, JSON.stringify(pinned));
+    } catch (e) {
+      console.warn('Could not save pinned sites to localStorage', e);
+    }
+    return !isPinned;
+  }
 
   const THEMES = [
     {
@@ -636,6 +670,10 @@
       const user = cells[1].textContent.trim();
       const rawAppType = cells[2].textContent.trim().toLowerCase();
 
+      row.setAttribute('data-domain', domain.toLowerCase());
+      const isPinned = isSitePinned(domain);
+      if (isPinned) row.classList.add('is-pinned');
+
       let badgeClass = 'clp-tech-static';
       let icon = TECH_ICONS.static;
       let appName = 'Static';
@@ -687,6 +725,12 @@
         actionsWrap.className = 'clp-cell-actions';
         actionsWrap.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; margin-left: 10px;';
         actionsWrap.innerHTML = `
+          <button type="button" class="clp-table-pin-btn ${isPinned ? 'is-pinned' : ''}" data-domain="${domain}" title="${isPinned ? 'Unpin site' : 'Pin to top'}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${isPinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="17" x2="12" y2="22"></line>
+              <path d="M5 17h14v-1.5l-2.5-2.5V5a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 6.5 5v8L4 15.5V17z"></path>
+            </svg>
+          </button>
           <a href="https://${domain}" target="_blank" rel="noopener noreferrer" title="Visit Site ↗" style="color: var(--clp-text-muted); font-size: 11px;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
@@ -700,16 +744,38 @@
           navigator.clipboard.writeText(domain);
           showToast(`Domain "${domain}" copied!`);
         });
+        actionsWrap.querySelector('.clp-table-pin-btn').addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleTogglePin(domain);
+        });
         domainLink.appendChild(actionsWrap);
       }
     });
 
     if (document.querySelector('.clp-sites-card-grid')) return;
 
+    // Sort sitesData with pinned sites at the top
+    const initialPinned = getPinnedSites();
+    sitesData.sort((a, b) => {
+      const pinA = initialPinned.indexOf(a.domain.toLowerCase());
+      const pinB = initialPinned.indexOf(b.domain.toLowerCase());
+      if (pinA !== -1 && pinB !== -1) return pinA - pinB;
+      if (pinA !== -1) return -1;
+      if (pinB !== -1) return 1;
+      return 0;
+    });
+
+    // Reorder rows in table tbody to match pinned priority
+    const tbody = tableSites.querySelector('tbody');
+    if (tbody) {
+      sitesData.forEach(s => tbody.appendChild(s.element));
+    }
+
     // Build Executive Sites Metric Overview Banner
     const totalCount = sitesData.length;
     const wpCount = sitesData.filter(s => s.appType.includes('word')).length;
-    const nodeCount = sitesData.filter(s => s.appType.includes('node')).length;
+    const staticCount = sitesData.filter(s => s.appType.includes('stat') || s.appName === 'Static').length;
     const phpCount = sitesData.filter(s => s.appType.includes('php')).length;
 
     const summaryBanner = document.createElement('div');
@@ -727,7 +793,7 @@
         <div class="clp-summary-label">Stack Distribution</div>
         <div class="clp-summary-val" style="font-size: 14px; display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
           <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">PHP: ${phpCount}</span>
-          <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Node: ${nodeCount}</span>
+          <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Static: ${staticCount}</span>
           <span class="badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">WordPress: ${wpCount}</span>
         </div>
       </div>
@@ -740,22 +806,34 @@
     cardGridContainer.className = 'clp-sites-card-grid';
 
     sitesData.forEach(site => {
+      const pinned = isSitePinned(site.domain);
       const card = document.createElement('div');
-      card.className = 'clp-site-card';
+      card.className = `clp-site-card ${pinned ? 'is-pinned' : ''}`;
       card.setAttribute('data-domain', site.domain.toLowerCase());
       card.setAttribute('data-app', site.appType);
 
       card.innerHTML = `
         <div class="clp-site-card-top">
           <div class="clp-site-card-header">
-            <a href="${site.manageUrl}" class="clp-site-card-domain" title="Manage ${site.domain}">
-              <span class="clp-site-domain-icon">🌐</span>
-              <span>${site.domain}</span>
-            </a>
-            <span class="clp-tech-badge ${site.badgeClass}">
-              ${site.icon}
-              <span>${site.appName}</span>
-            </span>
+            <div class="clp-site-card-domain-wrap">
+              <button type="button" class="clp-pin-btn ${pinned ? 'is-pinned' : ''}" data-domain="${site.domain}" title="${pinned ? 'Unpin site' : 'Pin to top'}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="${pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="17" x2="12" y2="22"></line>
+                  <path d="M5 17h14v-1.5l-2.5-2.5V5a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 6.5 5v8L4 15.5V17z"></path>
+                </svg>
+              </button>
+              <a href="${site.manageUrl}" class="clp-site-card-domain" title="Manage ${site.domain}">
+                <span class="clp-site-domain-icon">🌐</span>
+                <span class="clp-domain-text">${site.domain}</span>
+              </a>
+            </div>
+            <div class="clp-site-card-header-badges">
+              ${pinned ? '<span class="clp-pinned-badge">Pinned</span>' : ''}
+              <span class="clp-tech-badge ${site.badgeClass}">
+                ${site.icon}
+                <span>${site.appName}</span>
+              </span>
+            </div>
           </div>
           <div class="clp-site-card-meta">
             <div class="clp-site-meta-item">
@@ -778,6 +856,16 @@
           <a href="https://${site.domain}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" title="Visit in new tab">Visit ↗</a>
         </div>
       `;
+
+      const pinBtn = card.querySelector('.clp-pin-btn');
+      if (pinBtn) {
+        pinBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleTogglePin(site.domain);
+        });
+      }
+
       cardGridContainer.appendChild(card);
     });
 
@@ -794,12 +882,13 @@
       </div>
       <div class="clp-filter-pills">
         <span class="clp-filter-pill active" data-filter="all">All (${sitesData.length})</span>
+        <span class="clp-filter-pill" data-filter="pinned">📌 Pinned</span>
         <span class="clp-filter-pill" data-filter="php">PHP</span>
+        <span class="clp-filter-pill" data-filter="word">WordPress</span>
+        <span class="clp-filter-pill" data-filter="static">Static</span>
         <span class="clp-filter-pill" data-filter="node">Node.js</span>
         <span class="clp-filter-pill" data-filter="pyth">Python</span>
-        <span class="clp-filter-pill" data-filter="word">WordPress</span>
         <span class="clp-filter-pill" data-filter="proxy">Proxy</span>
-        <span class="clp-filter-pill" data-filter="static">Static</span>
       </div>
       <div class="clp-view-toggle">
         <button type="button" class="clp-view-btn" data-view="table" title="Table View">
@@ -822,13 +911,91 @@
 
       sitesData.forEach(site => {
         const matchesQuery = site.domain.toLowerCase().includes(q) || site.user.toLowerCase().includes(q);
-        const matchesFilter = currentFilter === 'all' || site.appType.includes(currentFilter);
+        const pinned = isSitePinned(site.domain);
+        const matchesFilter = currentFilter === 'all' || 
+          (currentFilter === 'pinned' ? pinned : site.appType.includes(currentFilter));
         const shouldShow = matchesQuery && matchesFilter;
 
         site.element.style.display = shouldShow ? '' : 'none';
         const cardMatch = cardGridContainer.querySelector(`.clp-site-card[data-domain="${site.domain.toLowerCase()}"]`);
         if (cardMatch) cardMatch.style.display = shouldShow ? 'flex' : 'none';
       });
+    }
+
+    function handleTogglePin(domain) {
+      const isNowPinned = toggleSitePin(domain);
+      const currentPinned = getPinnedSites();
+
+      // Update all pin buttons for this domain (grid + table)
+      document.querySelectorAll(`.clp-pin-btn[data-domain="${domain}"], .clp-table-pin-btn[data-domain="${domain}"]`).forEach(btn => {
+        btn.classList.toggle('is-pinned', isNowPinned);
+        btn.title = isNowPinned ? 'Unpin site' : 'Pin to top';
+        const svg = btn.querySelector('svg');
+        if (svg) svg.setAttribute('fill', isNowPinned ? 'currentColor' : 'none');
+      });
+
+      // Update card styling and badge
+      const card = cardGridContainer.querySelector(`.clp-site-card[data-domain="${domain.toLowerCase()}"]`);
+      if (card) {
+        card.classList.toggle('is-pinned', isNowPinned);
+        const badgesWrap = card.querySelector('.clp-site-card-header-badges');
+        const existingBadge = badgesWrap ? badgesWrap.querySelector('.clp-pinned-badge') : null;
+        if (isNowPinned && !existingBadge && badgesWrap) {
+          const badge = document.createElement('span');
+          badge.className = 'clp-pinned-badge';
+          badge.textContent = 'Pinned';
+          badgesWrap.insertBefore(badge, badgesWrap.firstChild);
+        } else if (!isNowPinned && existingBadge) {
+          existingBadge.remove();
+        }
+      }
+
+      // Update table row styling
+      const row = tableSites.querySelector(`tbody tr[data-domain="${domain.toLowerCase()}"]`);
+      if (row) {
+        row.classList.toggle('is-pinned', isNowPinned);
+      }
+
+      // Re-order DOM elements
+      reorderElements(currentPinned);
+
+      // Re-apply search/filter if active
+      applyFilterAndSearch();
+
+      // Show toast
+      showToast(isNowPinned ? `📌 "${domain}" pinned to top!` : `Unpinned "${domain}"`);
+    }
+
+    function reorderElements(pinned) {
+      // Re-order cards in cardGridContainer
+      const cards = Array.from(cardGridContainer.querySelectorAll('.clp-site-card'));
+      cards.sort((a, b) => {
+        const domA = (a.getAttribute('data-domain') || '').toLowerCase();
+        const domB = (b.getAttribute('data-domain') || '').toLowerCase();
+        const pinA = pinned.indexOf(domA);
+        const pinB = pinned.indexOf(domB);
+        if (pinA !== -1 && pinB !== -1) return pinA - pinB;
+        if (pinA !== -1) return -1;
+        if (pinB !== -1) return 1;
+        return 0;
+      });
+      cards.forEach(c => cardGridContainer.appendChild(c));
+
+      // Re-order table rows
+      if (tbody) {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const domA = (a.getAttribute('data-domain') || '').toLowerCase();
+          const domB = (b.getAttribute('data-domain') || '').toLowerCase();
+          const pinA = pinned.indexOf(domA);
+          const pinB = pinned.indexOf(domB);
+          if (pinA !== -1 && pinB !== -1) return pinA - pinB;
+          if (pinA !== -1) return -1;
+          if (pinB !== -1) return 1;
+          return 0;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+      }
     }
 
     searchInput.addEventListener('input', applyFilterAndSearch);
