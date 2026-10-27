@@ -687,8 +687,8 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 .clp-pin-btn {
-  background: transparent;
-  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--clp-border-default);
   border-radius: var(--clp-radius-sm);
   color: var(--clp-text-muted);
   cursor: pointer;
@@ -705,14 +705,15 @@ html[dir="rtl"] .clp-sites-search-input {
 .clp-pin-btn:hover {
   color: var(--clp-accent);
   background: rgba(56, 189, 248, 0.12);
-  border-color: rgba(56, 189, 248, 0.25);
+  border-color: rgba(56, 189, 248, 0.3);
   transform: scale(1.08);
 }
 
 .clp-pin-btn.is-pinned {
-  color: var(--clp-accent);
-  background: rgba(56, 189, 248, 0.18);
-  border-color: rgba(56, 189, 248, 0.4);
+  color: #fff !important;
+  background: var(--clp-accent) !important;
+  border-color: var(--clp-accent) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5) !important;
 }
 
 .clp-pin-btn svg {
@@ -725,7 +726,7 @@ html[dir="rtl"] .clp-sites-search-input {
 
 .clp-table-pin-btn {
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--clp-text-muted);
   cursor: pointer;
   display: inline-flex;
@@ -744,30 +745,14 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 .clp-table-pin-btn.is-pinned {
-  color: var(--clp-accent);
+  color: #fff !important;
+  background: var(--clp-accent) !important;
+  border-color: var(--clp-accent) !important;
+  border-radius: 4px;
 }
 
 .clp-table-pin-btn.is-pinned svg {
   transform: rotate(45deg);
-}
-
-.clp-pinned-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 9999px;
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--clp-accent);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  letter-spacing: 0.3px;
-}
-
-.clp-pinned-badge::before {
-  content: '📌';
-  font-size: 10px;
 }
 
 .table-sites tbody tr.is-pinned td {
@@ -776,13 +761,14 @@ html[dir="rtl"] .clp-sites-search-input {
 }
 
 .clp-site-card-domain {
-  font-size: 15.5px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--clp-text-heading);
-  word-break: break-all;
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 
 .clp-site-domain-icon {

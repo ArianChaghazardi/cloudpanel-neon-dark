@@ -828,7 +828,6 @@
               </a>
             </div>
             <div class="clp-site-card-header-badges">
-              ${pinned ? '<span class="clp-pinned-badge">Pinned</span>' : ''}
               <span class="clp-tech-badge ${site.badgeClass}">
                 ${site.icon}
                 <span>${site.appName}</span>
@@ -934,20 +933,10 @@
         if (svg) svg.setAttribute('fill', isNowPinned ? 'currentColor' : 'none');
       });
 
-      // Update card styling and badge
+      // Update card styling
       const card = cardGridContainer.querySelector(`.clp-site-card[data-domain="${domain.toLowerCase()}"]`);
       if (card) {
         card.classList.toggle('is-pinned', isNowPinned);
-        const badgesWrap = card.querySelector('.clp-site-card-header-badges');
-        const existingBadge = badgesWrap ? badgesWrap.querySelector('.clp-pinned-badge') : null;
-        if (isNowPinned && !existingBadge && badgesWrap) {
-          const badge = document.createElement('span');
-          badge.className = 'clp-pinned-badge';
-          badge.textContent = 'Pinned';
-          badgesWrap.insertBefore(badge, badgesWrap.firstChild);
-        } else if (!isNowPinned && existingBadge) {
-          existingBadge.remove();
-        }
       }
 
       // Update table row styling
